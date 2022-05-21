@@ -1,0 +1,25 @@
+PODS:
+  - PuyoBuilder (0.1.0)
+  - Puyopuyo (3.0.0-beta-2):
+    - Puyopuyo/Core (= 3.0.0-beta-2)
+  - Puyopuyo/Core (3.0.0-beta-2)
+
+DEPENDENCIES:
+  - PuyoBuilder (from `../`)
+  - Puyopuyo (= 3.0.0-beta-2)
+
+SPEC REPOS:
+  trunk:
+    - Puyopuyo
+
+EXTERNAL SOURCES:
+  PuyoBuilder:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  PuyoBuilder: f9a07e21fbbf2fb1eb6d82611856769dca609063
+  Puyopuyo: 1255278c70f41920e8610d8c08efb2d7b553367c
+
+PODFILE CHECKSUM: c7d8f1c4a2a9b1e7d858d96c043b18c60948991c
+
+COCOAPODS: 1.11.2
