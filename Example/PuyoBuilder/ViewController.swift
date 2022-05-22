@@ -6,19 +6,52 @@
 //  Copyright (c) 2022 Jrwong. All rights reserved.
 //
 
+import Puyopuyo
 import UIKit
 
 class ViewController: UIViewController {
-
+    let store = BuilderStore()
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        
+        view.backgroundColor = .systemBackground
+
+        HBox().attach(view) {
+            LayerPanel(store: store).attach($0)
+                .size(240, .fill)
+                .onTap(to: self) { this, _ in
+                    presentSelection(from: this, [
+                        .init(title: "title1", value: 0),
+                        .init(title: "title2", value: 1),
+                        .init(title: "title3", value: 2),
+                    ], selected: 0, result: Inputs {
+                        print($0)
+                    })
+                }
+
+            CanvasPanel(store: store).attach($0)
+                .size(.fill, .fill)
+
+            PropsPanel(store: store).attach($0)
+                .size(240, .fill)
+        }
+        .padding(view.py_safeArea())
+        .size(.fill, .fill)
+
+        let root = LayerNode()
+        root.layoutType = .linear
+        root.nodeType = .box
+
+        store.replaceRoot(root)
+
+        let label = LayerNode()
+        label.nodeType = .concrete
+
+        store.appendNode(label, id: root.id)
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
 }
-

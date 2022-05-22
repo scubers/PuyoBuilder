@@ -1,15 +1,18 @@
 PODS:
+  - HandyJSON (5.0.2)
   - PuyoBuilder (0.1.0)
   - Puyopuyo (3.0.0-beta-2):
     - Puyopuyo/Core (= 3.0.0-beta-2)
   - Puyopuyo/Core (3.0.0-beta-2)
 
 DEPENDENCIES:
+  - HandyJSON
   - PuyoBuilder (from `../`)
   - Puyopuyo (= 3.0.0-beta-2)
 
 SPEC REPOS:
   trunk:
+    - HandyJSON
     - Puyopuyo
 
 EXTERNAL SOURCES:
@@ -17,9 +20,10 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
+  HandyJSON: 9e4e236f5d2dbefad5155a77417bbea438201c03
   PuyoBuilder: f9a07e21fbbf2fb1eb6d82611856769dca609063
   Puyopuyo: 1255278c70f41920e8610d8c08efb2d7b553367c
 
-PODFILE CHECKSUM: c7d8f1c4a2a9b1e7d858d96c043b18c60948991c
+PODFILE CHECKSUM: 45fd46a486e891d9dcdc2c82a45f38b437bc36d8
 
 COCOAPODS: 1.11.2
