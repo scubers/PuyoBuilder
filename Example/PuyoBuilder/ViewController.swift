@@ -19,15 +19,6 @@ class ViewController: UIViewController {
         HBox().attach(view) {
             LayerPanel(store: store).attach($0)
                 .size(240, .fill)
-                .onTap(to: self) { this, _ in
-                    presentSelection(from: this, [
-                        .init(title: "title1", value: 0),
-                        .init(title: "title2", value: 1),
-                        .init(title: "title3", value: 2),
-                    ], selected: 0, result: Inputs {
-                        print($0)
-                    })
-                }
 
             CanvasPanel(store: store).attach($0)
                 .size(.fill, .fill)

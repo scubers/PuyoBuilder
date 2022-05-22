@@ -36,8 +36,6 @@ class SizeDescriptionInspector: VBox, Stateful {
     }
 
     override func buildBody() {
-//        let this = WeakableObject(value: self)
-
         attach {
             PropsSectionTitleView().attach($0)
                 .text(binder.title)
@@ -158,7 +156,7 @@ class SizeDescriptionInspector: VBox, Stateful {
         .justifyContent(.left)
         .padding(all: 8)
         .space(8)
-        .animator(Animators.default)
+//        .animator(VerticalExpandAnimator())
         .backgroundColor(.secondarySystemBackground)
     }
 

@@ -67,6 +67,10 @@ extension BuilderStore {
         canvas.appendNode(node, for: id)
         notify()
     }
+
+    func findNode(by id: String) -> LayerNode? {
+        canvas.findNode(by: id)?.target
+    }
 }
 
 // MARK: - Builder generator

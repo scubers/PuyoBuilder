@@ -24,6 +24,9 @@ class LayerPanel: ZBox {
     override func buildBody() {
         let empty = store.onChanged.binder.empty.debounce(interval: 0.1)
 
+        let this = WeakableObject(value: self)
+
+        let selectedId = store.selected
         attach {
             RecycleBox(
                 sections: [
@@ -32,9 +35,22 @@ class LayerPanel: ZBox {
                             UILabel().attach($0)
                                 .text(o.data.node.layoutType.map { "\($0)" })
                         }
-                        .padding(all: 8, bottom: 0)
+                        .backgroundColor(Outputs.combine(selectedId, o.data.node.id).map({ (v1, v2) -> UIColor in
+                            if v1 == v2 {
+                                return UIColor.systemBlue
+                            }
+                            return UIColor.secondarySystemBackground
+                        }))
+                        .padding(all: 4)
                         .margin(left: o.data.depth.map { CGFloat($0) * 8 })
+                        .margin(bottom: 1)
                         .width(o.contentSize.width)
+                    }, didSelect: { info in
+                        if let id = this.value?.store.selected.value, id == info.data.node.id {
+                            this.value?.store.selected.value = nil
+                        } else {
+                            this.value?.store.selected.value = info.data.node.id
+                        }
                     })
                 ].asOutput()
             )
@@ -69,5 +85,4 @@ class LayerPanel: ZBox {
 struct LayerPanelItem {
     var depth: Int
     var node: LayerNode
-    var selected: Bool = false
 }
