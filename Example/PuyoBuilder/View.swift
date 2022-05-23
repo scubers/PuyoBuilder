@@ -25,6 +25,8 @@ class CanvasView: ZBox {
         
         attach().backgroundColor(.secondarySystemBackground)
             .size(store.canvasSize.width, store.canvasSize.height)
+            .animator(CanvasAnimator())
+        
     }
 
     @available(*, unavailable)

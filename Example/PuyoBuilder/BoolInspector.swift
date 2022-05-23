@@ -34,7 +34,7 @@ class BoolInspector: HBox, Stateful, Eventable {
         }
         .space(8)
         .width(.fill)
-        .backgroundColor(.secondarySystemBackground)
+        .backgroundColor(.secondarySystemGroupedBackground)
         .padding(all: 8)
     }
 }

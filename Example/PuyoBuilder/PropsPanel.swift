@@ -164,10 +164,11 @@ class PropsPanel: ZBox {
                 .size(.fill, .wrap)
                 .space(1)
                 .autoJudgeScroll(true)
+                .backgroundColor(UIColor.systemGroupedBackground)
             }
-            .backgroundColor(.systemBackground)
             .set(\.showsVerticalScrollIndicator, false)
             .size(.fill, .fill)
         }
+        .backgroundColor(.secondarySystemGroupedBackground)
     }
 }

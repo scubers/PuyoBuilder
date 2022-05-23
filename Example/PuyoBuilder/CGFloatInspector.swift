@@ -31,7 +31,7 @@ class CGFloatInspector: VBox, Stateful, Eventable {
                 .width(.fill)
         }
         .width(.fill)
-        .backgroundColor(.secondarySystemBackground)
+        .backgroundColor(.secondarySystemGroupedBackground)
         .padding(all: 8)
     }
 }

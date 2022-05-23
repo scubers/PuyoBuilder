@@ -14,34 +14,25 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = .systemGroupedBackground
 
-        HBox().attach(view) {
-            LayerPanel(store: store).attach($0)
-                .size(240, .fill)
+        ZBox().attach(view) {
+            HBox().attach($0) {
+                LayerPanel(store: store).attach($0)
+                    .size(240, .fill)
 
-            CanvasPanel(store: store).attach($0)
-                .size(.fill, .fill)
+                CanvasPanel(store: store).attach($0)
+                    .size(.fill, .fill)
 
-            PropsPanel(store: store).attach($0)
-                .size(240, .fill)
+                PropsPanel(store: store).attach($0)
+                    .size(240, .fill)
+            }
+            .size(.fill, .fill)
         }
-        .padding(view.py_safeArea())
         .size(.fill, .fill)
+    }
 
-        let root = LayerNode()
-        root.layoutType = .flow
-        root.nodeType = .box
-
-        store.replaceRoot(root)
-
-        let label1 = LayerNode()
-        label1.nodeType = .concrete
-
-        let label2 = LayerNode()
-        label2.nodeType = .concrete
-
-        store.appendNode(label1, id: root.id)
-        store.appendNode(label2, id: root.id)
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
     }
 }

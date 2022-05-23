@@ -157,7 +157,7 @@ class SizeDescriptionInspector: VBox, Stateful, Eventable {
         .justifyContent(.left)
         .padding(all: 8)
         .space(8)
-        .backgroundColor(.secondarySystemBackground)
+        .backgroundColor(.secondarySystemGroupedBackground)
     }
 
     func notify<V>(value: V, keyPath: WritableKeyPath<ViewState, V>) {

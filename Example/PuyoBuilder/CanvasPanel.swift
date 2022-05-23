@@ -21,12 +21,12 @@ class CanvasPanel: ZBox {
 
             this.attach {
                 CanvasView(store: store).attach($0)
-                    .alignment(.center)
-                    .animator(Animators.default)
             }
         }
 
-        attach().justifyContent(.center)
+        attach()
+            .justifyContent(.center)
+            .padding(all: 20)
     }
 
     @available(*, unavailable)

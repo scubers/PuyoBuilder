@@ -39,8 +39,7 @@ class AlignmentInspector: VBox, Stateful, Eventable {
         .justifyContent(.left)
         .padding(all: 8)
         .space(8)
-//        .animator(VerticalExpandAnimator())
-        .backgroundColor(.secondarySystemBackground)
+        .backgroundColor(.secondarySystemGroupedBackground)
         .width(.fill)
     }
 

@@ -51,7 +51,7 @@ class SelectionInspector<V>: HBox, Stateful, Eventable {
         }
         .space(8)
         .width(.fill)
-        .backgroundColor(.secondarySystemBackground)
+        .backgroundColor(.secondarySystemGroupedBackground)
         .padding(all: 8)
         .justifyContent(.center)
     }

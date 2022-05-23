@@ -27,6 +27,8 @@
 		096A9FCF283AB2A200C6283E /* VerticalExpandAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 096A9FCE283AB2A200C6283E /* VerticalExpandAnimator.swift */; };
 		096A9FD1283BD46C00C6283E /* SelectorButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 096A9FD0283BD46C00C6283E /* SelectorButton.swift */; };
 		096A9FD3283BDA8E00C6283E /* CGFloatInspector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 096A9FD2283BDA8E00C6283E /* CGFloatInspector.swift */; };
+		096A9FD6283BEA1C00C6283E /* NodeSelectVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 096A9FD5283BEA1C00C6283E /* NodeSelectVC.swift */; };
+		096A9FD8283BF3F500C6283E /* CanvasAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 096A9FD7283BF3F500C6283E /* CanvasAnimator.swift */; };
 		28211C85A23069A1DD202176 /* Pods_PuyoBuilder_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04A1C3D714D6E8756DD08471 /* Pods_PuyoBuilder_Example.framework */; };
 		28EA1FB33035E0FAAA1AEF6D /* Pods_PuyoBuilder_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C14E97FE272F2E9C82E46408 /* Pods_PuyoBuilder_Tests.framework */; };
 		607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD51AFB9204008FA782 /* AppDelegate.swift */; };
@@ -71,6 +73,8 @@
 		096A9FCE283AB2A200C6283E /* VerticalExpandAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerticalExpandAnimator.swift; sourceTree = "<group>"; };
 		096A9FD0283BD46C00C6283E /* SelectorButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectorButton.swift; sourceTree = "<group>"; };
 		096A9FD2283BDA8E00C6283E /* CGFloatInspector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGFloatInspector.swift; sourceTree = "<group>"; };
+		096A9FD5283BEA1C00C6283E /* NodeSelectVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeSelectVC.swift; sourceTree = "<group>"; };
+		096A9FD7283BF3F500C6283E /* CanvasAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasAnimator.swift; sourceTree = "<group>"; };
 		263A03F08B4D1DD062C03527 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		5B0B1B1109CA217CF1EBDB36 /* PuyoBuilder.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = PuyoBuilder.podspec; path = ../PuyoBuilder.podspec; sourceTree = "<group>"; };
 		607FACD01AFB9204008FA782 /* PuyoBuilder_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PuyoBuilder_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -122,6 +126,7 @@
 		096A9FAA283953A300C6283E /* View */ = {
 			isa = PBXGroup;
 			children = (
+				096A9FD4283BE85000C6283E /* NodeSelector */,
 				096A9FC1283A987F00C6283E /* Inspectors */,
 				096A9FAB283953AA00C6283E /* View.swift */,
 				096A9FB5283A148800C6283E /* LayerPanel.swift */,
@@ -140,6 +145,7 @@
 			children = (
 				096A9FAE283953B300C6283E /* Helper.swift */,
 				096A9FCE283AB2A200C6283E /* VerticalExpandAnimator.swift */,
+				096A9FD7283BF3F500C6283E /* CanvasAnimator.swift */,
 			);
 			name = Helper;
 			sourceTree = "<group>";
@@ -164,6 +170,14 @@
 				096A9FD2283BDA8E00C6283E /* CGFloatInspector.swift */,
 			);
 			name = Inspectors;
+			sourceTree = "<group>";
+		};
+		096A9FD4283BE85000C6283E /* NodeSelector */ = {
+			isa = PBXGroup;
+			children = (
+				096A9FD5283BEA1C00C6283E /* NodeSelectVC.swift */,
+			);
+			name = NodeSelector;
 			sourceTree = "<group>";
 		};
 		607FACC71AFB9204008FA782 = {
@@ -445,6 +459,8 @@
 				096A9FBC283A2CBD00C6283E /* SingleSelectVC.swift in Sources */,
 				096A9FCF283AB2A200C6283E /* VerticalExpandAnimator.swift in Sources */,
 				096A9FA9283953A000C6283E /* Model.swift in Sources */,
+				096A9FD8283BF3F500C6283E /* CanvasAnimator.swift in Sources */,
+				096A9FD6283BEA1C00C6283E /* NodeSelectVC.swift in Sources */,
 				096A9FC5283A98DC00C6283E /* InsetsInspector.swift in Sources */,
 				096A9FBE283A369300C6283E /* PropsSectionTitleView.swift in Sources */,
 				096A9FD3283BDA8E00C6283E /* CGFloatInspector.swift in Sources */,

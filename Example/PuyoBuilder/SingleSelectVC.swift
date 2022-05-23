@@ -9,14 +9,18 @@
 import Puyopuyo
 import UIKit
 
-private func findViewController(for responder: UIResponder?) -> UIViewController? {
+func findViewController(for responder: UIResponder?) -> UIViewController? {
     if let responder = responder as? UIViewController {
         return responder
     }
     return findViewController(for: responder?.next)
 }
 
-private func findTopViewController(for vc: UIViewController?) -> UIViewController? {
+func findTopViewController(for responder: UIResponder?) -> UIViewController? {
+    findTopViewController(for: findViewController(for: responder))
+}
+
+func findTopViewController(for vc: UIViewController?) -> UIViewController? {
     guard let vc = vc else {
         return nil
     }
