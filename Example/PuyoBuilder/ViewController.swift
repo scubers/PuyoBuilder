@@ -13,7 +13,7 @@ class ViewController: UIViewController {
     let store = BuilderStore()
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         view.backgroundColor = .systemBackground
 
         HBox().attach(view) {
@@ -30,19 +30,18 @@ class ViewController: UIViewController {
         .size(.fill, .fill)
 
         let root = LayerNode()
-        root.layoutType = .linear
+        root.layoutType = .flow
         root.nodeType = .box
 
         store.replaceRoot(root)
 
-        let label = LayerNode()
-        label.nodeType = .concrete
+        let label1 = LayerNode()
+        label1.nodeType = .concrete
 
-        store.appendNode(label, id: root.id)
-    }
+        let label2 = LayerNode()
+        label2.nodeType = .concrete
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+        store.appendNode(label1, id: root.id)
+        store.appendNode(label2, id: root.id)
     }
 }

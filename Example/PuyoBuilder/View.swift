@@ -23,7 +23,8 @@ class CanvasView: ZBox {
             this.layoutMeasure.size = Size(width: .fix(v.width), height: .fix(v.height))
         }
         
-        attach().backgroundColor(.white)
+        attach().backgroundColor(.secondarySystemBackground)
+            .size(store.canvasSize.width, store.canvasSize.height)
     }
 
     @available(*, unavailable)

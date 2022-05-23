@@ -25,6 +25,8 @@
 		096A9FCB283AA82800C6283E /* SelectionInspector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 096A9FCA283AA82800C6283E /* SelectionInspector.swift */; };
 		096A9FCD283AAB4500C6283E /* AlignmentInspector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 096A9FCC283AAB4500C6283E /* AlignmentInspector.swift */; };
 		096A9FCF283AB2A200C6283E /* VerticalExpandAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 096A9FCE283AB2A200C6283E /* VerticalExpandAnimator.swift */; };
+		096A9FD1283BD46C00C6283E /* SelectorButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 096A9FD0283BD46C00C6283E /* SelectorButton.swift */; };
+		096A9FD3283BDA8E00C6283E /* CGFloatInspector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 096A9FD2283BDA8E00C6283E /* CGFloatInspector.swift */; };
 		28211C85A23069A1DD202176 /* Pods_PuyoBuilder_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04A1C3D714D6E8756DD08471 /* Pods_PuyoBuilder_Example.framework */; };
 		28EA1FB33035E0FAAA1AEF6D /* Pods_PuyoBuilder_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C14E97FE272F2E9C82E46408 /* Pods_PuyoBuilder_Tests.framework */; };
 		607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD51AFB9204008FA782 /* AppDelegate.swift */; };
@@ -67,6 +69,8 @@
 		096A9FCA283AA82800C6283E /* SelectionInspector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionInspector.swift; sourceTree = "<group>"; };
 		096A9FCC283AAB4500C6283E /* AlignmentInspector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlignmentInspector.swift; sourceTree = "<group>"; };
 		096A9FCE283AB2A200C6283E /* VerticalExpandAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerticalExpandAnimator.swift; sourceTree = "<group>"; };
+		096A9FD0283BD46C00C6283E /* SelectorButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectorButton.swift; sourceTree = "<group>"; };
+		096A9FD2283BDA8E00C6283E /* CGFloatInspector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGFloatInspector.swift; sourceTree = "<group>"; };
 		263A03F08B4D1DD062C03527 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		5B0B1B1109CA217CF1EBDB36 /* PuyoBuilder.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = PuyoBuilder.podspec; path = ../PuyoBuilder.podspec; sourceTree = "<group>"; };
 		607FACD01AFB9204008FA782 /* PuyoBuilder_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PuyoBuilder_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -126,6 +130,7 @@
 				096A9FBB283A2CBD00C6283E /* SingleSelectVC.swift */,
 				096A9FBD283A369300C6283E /* PropsSectionTitleView.swift */,
 				096A9FBF283A37B800C6283E /* DropDownableView.swift */,
+				096A9FD0283BD46C00C6283E /* SelectorButton.swift */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -156,6 +161,7 @@
 				096A9FC8283AA6E800C6283E /* BoolInspector.swift */,
 				096A9FCA283AA82800C6283E /* SelectionInspector.swift */,
 				096A9FCC283AAB4500C6283E /* AlignmentInspector.swift */,
+				096A9FD2283BDA8E00C6283E /* CGFloatInspector.swift */,
 			);
 			name = Inspectors;
 			sourceTree = "<group>";
@@ -441,11 +447,13 @@
 				096A9FA9283953A000C6283E /* Model.swift in Sources */,
 				096A9FC5283A98DC00C6283E /* InsetsInspector.swift in Sources */,
 				096A9FBE283A369300C6283E /* PropsSectionTitleView.swift in Sources */,
+				096A9FD3283BDA8E00C6283E /* CGFloatInspector.swift in Sources */,
 				096A9FC0283A37B800C6283E /* DropDownableView.swift in Sources */,
 				096A9FBA283A14F000C6283E /* PropsPanel.swift in Sources */,
 				096A9FC3283A989300C6283E /* SizeDescriptionInspector.swift in Sources */,
 				096A9FAF283953B300C6283E /* Helper.swift in Sources */,
 				607FACD81AFB9204008FA782 /* ViewController.swift in Sources */,
+				096A9FD1283BD46C00C6283E /* SelectorButton.swift in Sources */,
 				096A9FCB283AA82800C6283E /* SelectionInspector.swift in Sources */,
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,
 				096A9FB8283A14E800C6283E /* CanvasPanel.swift in Sources */,

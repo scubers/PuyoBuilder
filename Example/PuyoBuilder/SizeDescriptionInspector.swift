@@ -8,7 +8,7 @@
 
 import Puyopuyo
 
-class SizeDescriptionInspector: VBox, Stateful {
+class SizeDescriptionInspector: VBox, Stateful, Eventable {
     struct ViewState {
         var title: String
         var sizeType: SizeDescription.SizeType
@@ -24,6 +24,7 @@ class SizeDescriptionInspector: VBox, Stateful {
     }
 
     let state = State<ViewState>(.init(title: "", sizeType: .wrap))
+    let emitter = SimpleIO<SizeDescription>()
 
     init(title: String) {
         super.init(frame: .zero)
@@ -45,23 +46,23 @@ class SizeDescriptionInspector: VBox, Stateful {
                 PropsTitleView().attach($0)
                     .text("Type")
 
-                DropDownableView().attach($0)
-                    .state(binder.sizeType.map { "\($0)" })
-                    .onTap(to: self) { this, _ in
-                        let selection = [
-                            Selection(title: "Fixed", value: SizeDescription.SizeType.fixed),
-                            .init(title: "Wrap", value: .wrap),
-                            .init(title: "Ratio", value: .ratio),
-                            .init(title: "AspectRatio", value: .aspectRatio),
-                        ]
-
-                        presentSelection(from: this, selection, selected: selection.firstIndex(where: { $0.value == this.state.value.sizeType }) ?? 0, result: Inputs {
-                            this.state.value.sizeType = selection[$0].value
-                            this.notify(value: selection[$0].value, keyPath: \.sizeType)
-                        })
+                VFlowGroup().attach($0) {
+                    for type in [SizeDescription.SizeType.fixed, .wrap, .ratio, .aspectRatio] {
+                        SelectorButton().attach($0)
+                            .style(TapTransformStyle())
+                            .set(\.state.value.title, "\(type)")
+                            .set(\.state.value.selected, binder.sizeType.map { $0 == type })
+                            .onTap(to: self) { this, _ in
+                                this.state.value.sizeType = type
+                                this.notify(value: type, keyPath: \.sizeType)
+                            }
                     }
+                }
+                .space(4)
+                .width(.fill)
             }
             .space(4)
+            .width(.fill)
             .justifyContent(.center)
 
             VFlow(count: 2).attach($0) {
@@ -156,7 +157,6 @@ class SizeDescriptionInspector: VBox, Stateful {
         .justifyContent(.left)
         .padding(all: 8)
         .space(8)
-//        .animator(VerticalExpandAnimator())
         .backgroundColor(.secondarySystemBackground)
     }
 
@@ -175,7 +175,7 @@ class SizeDescriptionInspector: VBox, Stateful {
             result = .aspectRatio(state.aspectRatio)
         }
 
-        print(result)
+        emit(result)
     }
 
     func createNumberInputGroup(title: String, data: Outputs<String>, event: Inputs<String>) -> UIView {

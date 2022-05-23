@@ -12,8 +12,8 @@ import HandyJSON
 class LayerCanvas: HandyJSON {
     required init() {}
 
-    var width: CGFloat = 200
-    var height: CGFloat = 200
+    var width: CGFloat = 300
+    var height: CGFloat = 300
 
     var root: LayerNode?
 

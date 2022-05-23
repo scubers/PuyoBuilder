@@ -9,7 +9,7 @@
 import Foundation
 import Puyopuyo
 
-class SelectionInspector<V>: HBox, Eventable {
+class SelectionInspector<V>: HBox, Stateful, Eventable {
     private let selection: [Selection<V>]
     let title: String
     init(title: String, selection: [Selection<V>]) {
@@ -23,30 +23,31 @@ class SelectionInspector<V>: HBox, Eventable {
         fatalError()
     }
 
+    let state = State(0)
+
     let emitter = SimpleIO<V>()
 
     override func buildBody() {
-        let this = WeakableObject(value: self)
-        let state = State(0)
+        let state = self.state
         attach {
             PropsTitleView().attach($0)
                 .text(title)
                 .textAlignment(.center)
                 .margin(vert: 8)
 
-            DropDownableView().attach($0)
-                .set(\.state.value, state.map {
-                    guard let selection = this.value?.selection, $0 < selection.count else {
-                        return ""
-                    }
-                    return "\(selection[$0].value)"
-                })
-        }
-        .onTap(to: self) { this, _ in
-            presentSelection(from: this, this.selection, selected: state.value, result: Inputs {
-                state.value = $0
-                this.notify(index: $0)
-            })
+            VFlowGroup().attach($0) {
+                for (idx, selector) in selection.enumerated() {
+                    SelectorButton().attach($0)
+                        .set(\.state.value.title, selector.title)
+                        .set(\.state.value.selected, state.distinct().map { $0 == idx })
+                        .onTap(to: self) { this, _ in
+                            state.value = idx
+                            this.notify(index: idx)
+                        }
+                }
+            }
+            .space(4)
+            .width(.fill)
         }
         .space(8)
         .width(.fill)
