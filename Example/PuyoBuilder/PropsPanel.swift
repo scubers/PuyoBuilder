@@ -71,7 +71,7 @@ class PropsPanel: ZBox {
                             case .height:
                                 SizeDescriptionInspector(title: "Height").attach(vbox)
                                     .set(\.state.value, states.height.state.map {
-                                        .init(title: "Width", sizeType: $0.sizeType, fixedValue: $0.fixedValue, ratio: $0.ratio, add: $0.add, min: $0.min, max: $0.max, priority: $0.priority, shrink: $0.shrink, grow: $0.grow, aspectRatio: $0.aspectRatio)
+                                        .init(title: "Height", sizeType: $0.sizeType, fixedValue: $0.fixedValue, ratio: $0.ratio, add: $0.add, min: $0.min, max: $0.max, priority: $0.priority, shrink: $0.shrink, grow: $0.grow, aspectRatio: $0.aspectRatio)
                                     })
                                     .onEvent(states.height.state)
                                     .width(.fill)

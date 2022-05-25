@@ -61,7 +61,7 @@ class LayerPanel: ZBox {
                         }
                         .backgroundColor(Outputs.combine(selectedId, o.data.node.id).map { v1, v2 -> UIColor in
                             if v1 == v2 {
-                                return UIColor.systemBlue.withAlphaComponent(0.5)
+                                return UIColor.systemBlue.withAlphaComponent(0.2)
                             }
                             return UIColor.clear
                         })
