@@ -39,30 +39,30 @@ class PropsPanel: ZBox {
                             switch type {
                             case .activated:
                                 BoolInspector().attach(vbox)
-                                    .set(\.state.value.title, "Activated")
-                                    .set(\.state.value.value, states.activated.state)
+                                    .setState(\.title, "Activated")
+                                    .setState(\.value, states.activated.state)
                                     .onEvent(states.activated.state)
 
                             case .flowEnding:
                                 BoolInspector().attach(vbox)
-                                    .set(\.state.value.title, "FlowEnding")
-                                    .set(\.state.value.value, states.flowEnding.state)
+                                    .setState(\.title, "FlowEnding")
+                                    .setState(\.value, states.flowEnding.state)
                                     .onEvent(states.flowEnding.state)
 
                             case .margin:
                                 InsetsInspector(title: "Margin").attach(vbox)
-                                    .set(\.state.value.insets, states.margin.state.distinct())
+                                    .setState(\.insets, states.margin.state.distinct())
                                     .onEvent(states.margin.state)
                                     .width(.fill)
                             case .alignment:
                                 AlignmentInspector().attach(vbox)
-                                    .set(\.state.value.title, "Alignment")
-                                    .set(\.state.value.alignment, states.alignment.state)
+                                    .setState(\.title, "Alignment")
+                                    .setState(\.alignment, states.alignment.state)
                                     .onEvent(states.alignment.state)
 
                             case .width:
                                 SizeDescriptionInspector(title: "Width").attach(vbox)
-                                    .set(\.state.value, states.width.state.map {
+                                    .state(states.width.state.map {
                                         .init(title: "Width", sizeType: $0.sizeType, fixedValue: $0.fixedValue, ratio: $0.ratio, add: $0.add, min: $0.min, max: $0.max, priority: $0.priority, shrink: $0.shrink, grow: $0.grow, aspectRatio: $0.aspectRatio)
                                     })
                                     .onEvent(states.width.state)
@@ -70,7 +70,7 @@ class PropsPanel: ZBox {
 
                             case .height:
                                 SizeDescriptionInspector(title: "Height").attach(vbox)
-                                    .set(\.state.value, states.height.state.map {
+                                    .state(states.height.state.map {
                                         .init(title: "Height", sizeType: $0.sizeType, fixedValue: $0.fixedValue, ratio: $0.ratio, add: $0.add, min: $0.min, max: $0.max, priority: $0.priority, shrink: $0.shrink, grow: $0.grow, aspectRatio: $0.aspectRatio)
                                     })
                                     .onEvent(states.height.state)
@@ -87,18 +87,18 @@ class PropsPanel: ZBox {
                                     selection.firstIndex(where: { $0.value == v }) ?? 0
                                 }
                                 SelectionInspector(title: "Visibility", selection: selection).attach(vbox)
-                                    .set(\.state.value, selected)
+                                    .state(selected)
                                     .onEvent(states.visibility.state)
 
                             case .justifyContent:
                                 AlignmentInspector().attach(vbox)
-                                    .set(\.state.value.title, "JustifyContent")
-                                    .set(\.state.value.alignment, states.justifyContent.state)
+                                    .setState(\.title, "JustifyContent")
+                                    .setState(\.alignment, states.justifyContent.state)
                                     .onEvent(states.justifyContent.state)
 
                             case .padding:
                                 InsetsInspector(title: "Padding").attach(vbox)
-                                    .set(\.state.value.insets, states.padding.state.distinct())
+                                    .setState(\.insets, states.padding.state.distinct())
                                     .onEvent(states.padding.state)
                                     .width(.fill)
                             case .direction:
@@ -110,19 +110,19 @@ class PropsPanel: ZBox {
                                     selection.firstIndex(where: { $0.value == v }) ?? 0
                                 }
                                 SelectionInspector(title: "Direction", selection: selection).attach(vbox)
-                                    .set(\.state.value, selected)
+                                    .state(selected)
                                     .onEvent(states.direction.state)
 
                             case .reverse:
                                 BoolInspector().attach(vbox)
-                                    .set(\.state.value.title, "Reverse")
-                                    .set(\.state.value.value, states.reverse.state)
+                                    .setState(\.title, "Reverse")
+                                    .setState(\.value, states.reverse.state)
                                     .onEvent(states.reverse.state)
 
                             case .space:
                                 CGFloatInspector().attach(vbox)
-                                    .set(\.state.value.title, "Space")
-                                    .set(\.state.value.value, states.space.state)
+                                    .setState(\.title, "Space")
+                                    .setState(\.value, states.space.state)
                                     .onEvent(states.space.state)
 
                             case .format:
@@ -137,25 +137,25 @@ class PropsPanel: ZBox {
                                     selection.firstIndex(where: { $0.value == v }) ?? 0
                                 }
                                 SelectionInspector(title: "Format", selection: selection).attach(vbox)
-                                    .set(\.state.value, selected)
+                                    .state(selected)
                                     .onEvent(states.format.state)
 
                             case .arrange:
                                 CGFloatInspector().attach(vbox)
-                                    .set(\.state.value.title, "Arrange")
-                                    .set(\.state.value.value, states.arrange.state.mapCGFloat())
+                                    .setState(\.title, "Arrange")
+                                    .setState(\.value, states.arrange.state.mapCGFloat())
                                     .onEvent(states.arrange.state.asInput { Int($0) })
 
                             case .itemSpace:
                                 CGFloatInspector().attach(vbox)
-                                    .set(\.state.value.title, "ItemSpace")
-                                    .set(\.state.value.value, states.itemSpace.state)
+                                    .setState(\.title, "ItemSpace")
+                                    .setState(\.value, states.itemSpace.state)
                                     .onEvent(states.itemSpace.state)
 
                             case .runSpace:
                                 CGFloatInspector().attach(vbox)
-                                    .set(\.state.value.title, "RunSpace")
-                                    .set(\.state.value.value, states.runSpace.state)
+                                    .setState(\.title, "RunSpace")
+                                    .setState(\.value, states.runSpace.state)
                                     .onEvent(states.runSpace.state)
                             }
                         }

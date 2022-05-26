@@ -25,8 +25,8 @@ class CGFloatInspector: VBox, Stateful, Eventable {
                 .width(.fill)
 
             PropsInputView().attach($0)
-                .set(\.state.value.title, binder.title.distinct())
-                .set(\.state.value.value, binder.value.distinct().map { Optional.some($0) })
+                .setState(\.title, binder.title.distinct())
+                .setState(\.value, binder.value.distinct().map { Optional.some($0) })
                 .onEvent(emitter)
                 .width(.fill)
         }

@@ -38,8 +38,8 @@ class SelectionInspector<V>: HBox, Stateful, Eventable {
             VFlowGroup().attach($0) {
                 for (idx, selector) in selection.enumerated() {
                     SelectorButton().attach($0)
-                        .set(\.state.value.title, selector.title)
-                        .set(\.state.value.selected, state.distinct().map { $0 == idx })
+                        .setState(\.title, selector.title)
+                        .setState(\.selected, state.distinct().map { $0 == idx })
                         .onTap(to: self) { this, _ in
                             state.value = idx
                             this.notify(index: idx)

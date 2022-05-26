@@ -50,8 +50,8 @@ class SizeDescriptionInspector: VBox, Stateful, Eventable {
                     for type in [SizeDescription.SizeType.fixed, .wrap, .ratio, .aspectRatio] {
                         SelectorButton().attach($0)
                             .style(TapTransformStyle())
-                            .set(\.state.value.title, "\(type)")
-                            .set(\.state.value.selected, binder.sizeType.map { $0 == type })
+                            .setState(\.title, "\(type)")
+                            .setState(\.selected, binder.sizeType.map { $0 == type })
                             .onTap(to: self) { this, _ in
                                 this.state.value.sizeType = type
                                 this.notify(value: type, keyPath: \.sizeType)
@@ -67,81 +67,81 @@ class SizeDescriptionInspector: VBox, Stateful, Eventable {
 
             VFlow(count: 2).attach($0) {
                 PropsInputView().attach($0)
-                    .set(\.state.value.title, "Fix")
-                    .set(\.state.value.default, 0)
-                    .set(\.state.value.value, binder.fixedValue.distinct().map { Optional.some($0) })
+                    .setState(\.title, "Fix")
+                    .setState(\.default, 0)
+                    .setState(\.value, binder.fixedValue.distinct().map { Optional.some($0) })
                     .visibility(binder.sizeType.map { ($0 == .fixed).py_visibleOrGone() })
                     .onEvent(to: self) { this, v in
                         this.notify(value: v, keyPath: \.fixedValue)
                     }
 
                 PropsInputView().attach($0)
-                    .set(\.state.value.title, "Ratio")
-                    .set(\.state.value.default, 0)
-                    .set(\.state.value.value, binder.ratio.distinct().map { Optional.some($0) })
+                    .setState(\.title, "Ratio")
+                    .setState(\.default, 0)
+                    .setState(\.value, binder.ratio.distinct().map { Optional.some($0) })
                     .visibility(binder.sizeType.map { ($0 == .ratio).py_visibleOrGone() })
                     .onEvent(to: self) { this, v in
                         this.notify(value: v, keyPath: \.ratio)
                     }
 
                 PropsInputView().attach($0)
-                    .set(\.state.value.title, "Aspect")
-                    .set(\.state.value.default, 0)
-                    .set(\.state.value.value, binder.aspectRatio.distinct().map { Optional.some($0) })
+                    .setState(\.title, "Aspect")
+                    .setState(\.default, 0)
+                    .setState(\.value, binder.aspectRatio.distinct().map { Optional.some($0) })
                     .visibility(binder.sizeType.map { ($0 == .aspectRatio).py_visibleOrGone() })
                     .onEvent(to: self) { this, v in
                         this.notify(value: v, keyPath: \.aspectRatio)
                     }
 
                 PropsInputView().attach($0)
-                    .set(\.state.value.title, "Shrink")
-                    .set(\.state.value.default, 0)
-                    .set(\.state.value.value, binder.shrink.distinct().map { Optional.some($0) })
+                    .setState(\.title, "Shrink")
+                    .setState(\.default, 0)
+                    .setState(\.value, binder.shrink.distinct().map { Optional.some($0) })
                     .visibility(binder.sizeType.map { ($0 == .wrap).py_visibleOrGone() })
                     .onEvent(to: self) { this, v in
                         this.notify(value: v, keyPath: \.shrink)
                     }
 
                 PropsInputView().attach($0)
-                    .set(\.state.value.title, "Grow")
-                    .set(\.state.value.default, 0)
-                    .set(\.state.value.value, binder.grow.distinct().map { Optional.some($0) })
+                    .setState(\.title, "Grow")
+                    .setState(\.default, 0)
+                    .setState(\.value, binder.grow.distinct().map { Optional.some($0) })
                     .visibility(binder.sizeType.map { ($0 == .wrap).py_visibleOrGone() })
                     .onEvent(to: self) { this, v in
                         this.notify(value: v, keyPath: \.grow)
                     }
 
                 PropsInputView().attach($0)
-                    .set(\.state.value.title, "Priority")
-                    .set(\.state.value.default, 0)
-                    .set(\.state.value.value, binder.priority.distinct().map { Optional.some($0) })
+                    .setState(\.title, "Priority")
+                    .setState(\.default, 0)
+                    .setState(\.value, binder.priority.distinct().map { Optional.some($0) })
                     .visibility(binder.sizeType.map { ($0 == .wrap).py_visibleOrGone() })
                     .onEvent(to: self) { this, v in
                         this.notify(value: v, keyPath: \.priority)
                     }
 
                 PropsInputView().attach($0)
-                    .set(\.state.value.title, "Add")
-                    .set(\.state.value.default, 0)
-                    .set(\.state.value.value, binder.add.distinct().map { Optional.some($0) })
+                    .setState(\.title, "Add")
+                    .setState(\.default, 0)
+                    .setState(\.value, binder.add.distinct().map { Optional.some($0) })
                     .visibility(binder.sizeType.map { ($0 == .wrap).py_visibleOrGone() })
                     .onEvent(to: self) { this, v in
                         this.notify(value: v, keyPath: \.add)
                     }
 
                 PropsInputView().attach($0)
-                    .set(\.state.value.title, "Max")
-                    .set(\.state.value.default, 0)
-                    .set(\.state.value.value, binder.max.distinct().map { Optional.some($0) })
+                    .setState(\.title, "Max")
+                    .setState(\.default, 0)
+                    .setState(\.value, binder.max.distinct().map { Optional.some($0) })
                     .visibility(binder.sizeType.map { ($0 == .wrap).py_visibleOrGone() })
                     .onEvent(to: self) { this, v in
                         this.notify(value: v, keyPath: \.max)
                     }
 
                 PropsInputView().attach($0)
-                    .set(\.state.value.title, "Min")
-                    .set(\.state.value.default, 0)
-                    .set(\.state.value.value, binder.min.distinct().map { Optional.some($0) })
+                    .setState(\.title, "Min")
+                    .setState(\.default, 0)
+                    .setState(\.value, binder.min.distinct().map { Optional.some($0) })
                     .visibility(binder.sizeType.map { ($0 == .wrap).py_visibleOrGone() })
                     .onEvent(to: self) { this, v in
                         this.notify(value: v, keyPath: \.min)

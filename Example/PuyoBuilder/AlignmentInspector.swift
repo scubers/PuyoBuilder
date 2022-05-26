@@ -58,8 +58,8 @@ class AlignmentInspector: VBox, Stateful, Eventable {
 
 private func createButton(title: String, target: Alignment, selected: Outputs<Alignment>, onClick: Inputs<Alignment>) -> UIView {
     SelectorButton().attach()
-        .set(\.state.value.title, title)
-        .set(\.state.value.selected, selected.map { $0.contains(target) })
+        .setState(\.title, title)
+        .setState(\.selected, selected.map { $0.contains(target) })
         .onTap(onClick.asInput { _ in target })
         .size(.fill, 40)
         .style(TapTransformStyle())
