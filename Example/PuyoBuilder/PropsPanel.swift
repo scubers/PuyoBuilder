@@ -39,24 +39,25 @@ class PropsPanel: ZBox {
                             switch type {
                             case .activated:
                                 BoolInspector().attach(vbox)
-                                    .setState(\.title, "Activated")
+                                    .setState(\.title, states.activated.title)
                                     .setState(\.value, states.activated.state)
                                     .onEvent(states.activated.state)
 
                             case .flowEnding:
                                 BoolInspector().attach(vbox)
-                                    .setState(\.title, "FlowEnding")
+                                    .setState(\.title, states.flowEnding.title)
                                     .setState(\.value, states.flowEnding.state)
                                     .onEvent(states.flowEnding.state)
 
                             case .margin:
-                                InsetsInspector(title: "Margin").attach(vbox)
+                                InsetsInspector().attach(vbox)
+                                    .setState(\.title, states.margin.title)
                                     .setState(\.insets, states.margin.state.distinct())
                                     .onEvent(states.margin.state)
                                     .width(.fill)
                             case .alignment:
                                 AlignmentInspector().attach(vbox)
-                                    .setState(\.title, "Alignment")
+                                    .setState(\.title, states.alignment.title)
                                     .setState(\.alignment, states.alignment.state)
                                     .onEvent(states.alignment.state)
 

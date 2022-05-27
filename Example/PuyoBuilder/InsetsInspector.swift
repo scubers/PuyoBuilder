@@ -19,7 +19,7 @@ class InsetsInspector: VBox, Stateful, Eventable {
 
     let emitter = SimpleIO<UIEdgeInsets>()
 
-    init(title: String) {
+    init(title: String = "") {
         super.init(frame: .zero)
         state.value.title = title
     }

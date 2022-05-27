@@ -26,7 +26,7 @@ class SizeDescriptionInspector: VBox, Stateful, Eventable {
     let state = State<ViewState>(.init(title: "", sizeType: .wrap))
     let emitter = SimpleIO<SizeDescription>()
 
-    init(title: String) {
+    init(title: String = "") {
         super.init(frame: .zero)
         self.state.value.title = title
     }
