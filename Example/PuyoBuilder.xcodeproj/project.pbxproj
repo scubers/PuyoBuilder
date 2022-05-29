@@ -29,6 +29,13 @@
 		096A9FD3283BDA8E00C6283E /* CGFloatInspector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 096A9FD2283BDA8E00C6283E /* CGFloatInspector.swift */; };
 		096A9FD6283BEA1C00C6283E /* NodeSelectVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 096A9FD5283BEA1C00C6283E /* NodeSelectVC.swift */; };
 		096A9FD8283BF3F500C6283E /* CanvasAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 096A9FD7283BF3F500C6283E /* CanvasAnimator.swift */; };
+		0979562B2843411B00E4BB56 /* UIViewPuzzleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0979562A2843411B00E4BB56 /* UIViewPuzzleView.swift */; };
+		0979562D2843486E00E4BB56 /* UIViewNodeHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0979562C2843486E00E4BB56 /* UIViewNodeHandler.swift */; };
+		0979562F28434C9400E4BB56 /* LinerNodeHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0979562E28434C9400E4BB56 /* LinerNodeHandler.swift */; };
+		0979563128434DE700E4BB56 /* FlowNodeHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0979563028434DE700E4BB56 /* FlowNodeHandler.swift */; };
+		0979563328434E0A00E4BB56 /* ZNodeHanlder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0979563228434E0A00E4BB56 /* ZNodeHanlder.swift */; };
+		0979563528434E5D00E4BB56 /* UILabelNodeHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0979563428434E5D00E4BB56 /* UILabelNodeHandler.swift */; };
+		09795637284367B000E4BB56 /* InspectorViewFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09795636284367B000E4BB56 /* InspectorViewFactory.swift */; };
 		28211C85A23069A1DD202176 /* Pods_PuyoBuilder_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04A1C3D714D6E8756DD08471 /* Pods_PuyoBuilder_Example.framework */; };
 		28EA1FB33035E0FAAA1AEF6D /* Pods_PuyoBuilder_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C14E97FE272F2E9C82E46408 /* Pods_PuyoBuilder_Tests.framework */; };
 		607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD51AFB9204008FA782 /* AppDelegate.swift */; };
@@ -75,6 +82,13 @@
 		096A9FD2283BDA8E00C6283E /* CGFloatInspector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGFloatInspector.swift; sourceTree = "<group>"; };
 		096A9FD5283BEA1C00C6283E /* NodeSelectVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeSelectVC.swift; sourceTree = "<group>"; };
 		096A9FD7283BF3F500C6283E /* CanvasAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasAnimator.swift; sourceTree = "<group>"; };
+		0979562A2843411B00E4BB56 /* UIViewPuzzleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewPuzzleView.swift; sourceTree = "<group>"; };
+		0979562C2843486E00E4BB56 /* UIViewNodeHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewNodeHandler.swift; sourceTree = "<group>"; };
+		0979562E28434C9400E4BB56 /* LinerNodeHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinerNodeHandler.swift; sourceTree = "<group>"; };
+		0979563028434DE700E4BB56 /* FlowNodeHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowNodeHandler.swift; sourceTree = "<group>"; };
+		0979563228434E0A00E4BB56 /* ZNodeHanlder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZNodeHanlder.swift; sourceTree = "<group>"; };
+		0979563428434E5D00E4BB56 /* UILabelNodeHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UILabelNodeHandler.swift; sourceTree = "<group>"; };
+		09795636284367B000E4BB56 /* InspectorViewFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectorViewFactory.swift; sourceTree = "<group>"; };
 		263A03F08B4D1DD062C03527 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		5B0B1B1109CA217CF1EBDB36 /* PuyoBuilder.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = PuyoBuilder.podspec; path = ../PuyoBuilder.podspec; sourceTree = "<group>"; };
 		607FACD01AFB9204008FA782 /* PuyoBuilder_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PuyoBuilder_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -126,6 +140,7 @@
 		096A9FAA283953A300C6283E /* View */ = {
 			isa = PBXGroup;
 			children = (
+				097956292843410200E4BB56 /* Puzzle */,
 				096A9FD4283BE85000C6283E /* NodeSelector */,
 				096A9FC1283A987F00C6283E /* Inspectors */,
 				096A9FAB283953AA00C6283E /* View.swift */,
@@ -154,6 +169,11 @@
 			isa = PBXGroup;
 			children = (
 				096A9FB12839F8CA00C6283E /* BuilderStore.swift */,
+				0979562C2843486E00E4BB56 /* UIViewNodeHandler.swift */,
+				0979562E28434C9400E4BB56 /* LinerNodeHandler.swift */,
+				0979563028434DE700E4BB56 /* FlowNodeHandler.swift */,
+				0979563228434E0A00E4BB56 /* ZNodeHanlder.swift */,
+				0979563428434E5D00E4BB56 /* UILabelNodeHandler.swift */,
 			);
 			name = Store;
 			sourceTree = "<group>";
@@ -168,6 +188,7 @@
 				096A9FCA283AA82800C6283E /* SelectionInspector.swift */,
 				096A9FCC283AAB4500C6283E /* AlignmentInspector.swift */,
 				096A9FD2283BDA8E00C6283E /* CGFloatInspector.swift */,
+				09795636284367B000E4BB56 /* InspectorViewFactory.swift */,
 			);
 			name = Inspectors;
 			sourceTree = "<group>";
@@ -178,6 +199,14 @@
 				096A9FD5283BEA1C00C6283E /* NodeSelectVC.swift */,
 			);
 			name = NodeSelector;
+			sourceTree = "<group>";
+		};
+		097956292843410200E4BB56 /* Puzzle */ = {
+			isa = PBXGroup;
+			children = (
+				0979562A2843411B00E4BB56 /* UIViewPuzzleView.swift */,
+			);
+			name = Puzzle;
 			sourceTree = "<group>";
 		};
 		607FACC71AFB9204008FA782 = {
@@ -457,12 +486,17 @@
 				096A9FAC283953AA00C6283E /* View.swift in Sources */,
 				096A9FC9283AA6E800C6283E /* BoolInspector.swift in Sources */,
 				096A9FBC283A2CBD00C6283E /* SingleSelectVC.swift in Sources */,
+				0979562F28434C9400E4BB56 /* LinerNodeHandler.swift in Sources */,
 				096A9FCF283AB2A200C6283E /* VerticalExpandAnimator.swift in Sources */,
+				0979563328434E0A00E4BB56 /* ZNodeHanlder.swift in Sources */,
 				096A9FA9283953A000C6283E /* Model.swift in Sources */,
 				096A9FD8283BF3F500C6283E /* CanvasAnimator.swift in Sources */,
 				096A9FD6283BEA1C00C6283E /* NodeSelectVC.swift in Sources */,
+				0979562D2843486E00E4BB56 /* UIViewNodeHandler.swift in Sources */,
 				096A9FC5283A98DC00C6283E /* InsetsInspector.swift in Sources */,
+				09795637284367B000E4BB56 /* InspectorViewFactory.swift in Sources */,
 				096A9FBE283A369300C6283E /* PropsSectionTitleView.swift in Sources */,
+				0979563128434DE700E4BB56 /* FlowNodeHandler.swift in Sources */,
 				096A9FD3283BDA8E00C6283E /* CGFloatInspector.swift in Sources */,
 				096A9FC0283A37B800C6283E /* DropDownableView.swift in Sources */,
 				096A9FBA283A14F000C6283E /* PropsPanel.swift in Sources */,
@@ -471,6 +505,8 @@
 				607FACD81AFB9204008FA782 /* ViewController.swift in Sources */,
 				096A9FD1283BD46C00C6283E /* SelectorButton.swift in Sources */,
 				096A9FCB283AA82800C6283E /* SelectionInspector.swift in Sources */,
+				0979562B2843411B00E4BB56 /* UIViewPuzzleView.swift in Sources */,
+				0979563528434E5D00E4BB56 /* UILabelNodeHandler.swift in Sources */,
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,
 				096A9FB8283A14E800C6283E /* CanvasPanel.swift in Sources */,
 				096A9FB4283A01FF00C6283E /* State.swift in Sources */,

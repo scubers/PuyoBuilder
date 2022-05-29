@@ -16,20 +16,14 @@ class BuilderStore: ChangeNotifier {
 
     private var canvas: LayerCanvas = .init()
 
-    private var states = [String: LayerNodeState]()
+    private var providers = [String: PuzzleStateProvider]()
 
     private func notify() {
         notifier.input(value: ())
     }
 
-    func getState(_ id: String) -> LayerNodeState {
-        if let state = states[id] {
-            return state
-        } else {
-            let state = LayerNodeState()
-            states[id] = state
-            return state
-        }
+    func getProvider(_ id: String) -> PuzzleStateProvider? {
+        providers[id]
     }
 
     var canvasSize: CGSize {
@@ -41,6 +35,16 @@ class BuilderStore: ChangeNotifier {
     var root: LayerNode? { canvas.root }
 
     let selected = State<String?>(nil)
+
+    var handlers: [BoxLayoutNodeHandler] {
+        [
+            UIViewNodeHandler(),
+            UILabelNodeHandler(),
+            LinearNodeHandler(),
+            ZNodeHandler(),
+            FlowNodeHandler(),
+        ]
+    }
 }
 
 // MARK: - Structure change
@@ -59,7 +63,10 @@ extension BuilderStore {
 
     func removeNode(_ id: String) {
         canvas.removeNode(id)
-        states.removeValue(forKey: id)
+        providers.removeValue(forKey: id)
+        if selected.value == id {
+            selected.value = nil
+        }
         notify()
     }
 
@@ -83,20 +90,18 @@ extension BuilderStore {
         return nil
     }
 
-    func buildBoxLayoutNode(_ node: LayerNode) -> BoxLayoutNode & AutoDisposable {
-        var result: BoxLayoutNode & AutoDisposable
-        switch (node.nodeType, node.layoutType) {
-        case (.concrete, _):
-            result = UILabel().attach().text("demo").view
-        case (.box, .linear): result = LinearBox()
-        case (.box, .flow): result = FlowBox()
-        case (.box, .z): result = ZBox()
-
-        case (.group, .linear): result = LinearGroup()
-        case (.group, .flow): result = FlowGroup()
-        case (.group, .z): result = ZGroup()
+    func buildBoxLayoutNode(_ node: LayerNode) -> BoxLayoutNode {
+        var result: BoxLayoutNode!
+        for handler in handlers {
+            if let nodeResult = handler.create(with: node) {
+                if let provider = providers[node.id] ?? handler.provider(with: node) {
+                    result = nodeResult
+                    handler.bind(provider: provider, for: nodeResult)
+                    providers[node.id] = provider
+                }
+                break
+            }
         }
-        bindState(node, boxLayoutNode: result)
 
         // children
         if let container = result as? BoxLayoutContainer {
@@ -108,55 +113,6 @@ extension BuilderStore {
 
         return result
     }
-
-    func bindState(_ node: LayerNode, boxLayoutNode: BoxLayoutNode & AutoDisposable) {
-        let state = getState(node.id)
-
-        func _bind<V>(_ output: Outputs<V>, action: @escaping (BoxLayoutNode, V) -> Void) {
-            boxLayoutNode.addDisposer(output.outputing { [weak boxLayoutNode] v in
-                if let boxLayoutNode = boxLayoutNode {
-                    action(boxLayoutNode, v)
-                }
-            }, for: nil)
-        }
-
-        node.availableStateTypes.forEach {
-            switch $0 {
-            case .activated:
-                _bind(state.activated.state.asOutput()) { (node: BoxLayoutNode, v) in node.layoutMeasure.activated = v }
-            case .flowEnding:
-                _bind(state.flowEnding.state.asOutput()) { (node: BoxLayoutNode, v) in node.layoutMeasure.flowEnding = v }
-            case .margin:
-                _bind(state.margin.state.asOutput()) { (node: BoxLayoutNode, v) in node.layoutMeasure.margin = v }
-            case .alignment:
-                _bind(state.alignment.state.asOutput()) { (node: BoxLayoutNode, v) in node.layoutMeasure.alignment = v }
-            case .width:
-                _bind(state.width.state.asOutput()) { (node: BoxLayoutNode, v) in node.layoutMeasure.size.width = v }
-            case .height:
-                _bind(state.height.state.asOutput()) { (node: BoxLayoutNode, v) in node.layoutMeasure.size.height = v }
-            case .visibility:
-                _bind(state.visibility.state.asOutput()) { (node: BoxLayoutNode, v) in node.layoutVisibility = v }
-            case .justifyContent:
-                _bind(state.justifyContent.state.asOutput()) { $0.getRegulator()?.justifyContent = $1 }
-            case .padding:
-                _bind(state.padding.state.asOutput()) { $0.getRegulator()?.padding = $1 }
-            case .direction:
-                _bind(state.direction.state.asOutput()) { $0.getLinearRegulator()?.direction = $1 }
-            case .reverse:
-                _bind(state.reverse.state.asOutput()) { $0.getLinearRegulator()?.reverse = $1 }
-            case .space:
-                _bind(state.space.state.asOutput()) { $0.getLinearRegulator()?.space = $1 }
-            case .format:
-                _bind(state.format.state.asOutput()) { $0.getLinearRegulator()?.format = $1 }
-            case .arrange:
-                _bind(state.arrange.state.asOutput()) { $0.getFlowRegulator()?.arrange = $1 }
-            case .itemSpace:
-                _bind(state.itemSpace.state.asOutput()) { $0.getFlowRegulator()?.itemSpace = $1 }
-            case .runSpace:
-                _bind(state.runSpace.state.asOutput()) { $0.getFlowRegulator()?.runSpace = $1 }
-            }
-        }
-    }
 }
 
 extension BoxLayoutNode {
@@ -164,4 +120,24 @@ extension BoxLayoutNode {
     func getLinearRegulator() -> LinearRegulator? { layoutMeasure as? LinearRegulator }
     func getFlowRegulator() -> FlowRegulator? { layoutMeasure as? FlowRegulator }
     func getZRegulator() -> ZRegulator? { layoutMeasure as? ZRegulator }
+}
+
+struct BoxLayoutNodeCreateResult {
+    var node: BoxLayoutNode
+    var provider: PuzzleStateProvider
+}
+
+protocol BoxLayoutNodeHandler {
+    func shouldHandle(_ layerNode: LayerNode) -> Bool
+    func create(with layerNode: LayerNode) -> BoxLayoutNode?
+    func provider(with layerNode: LayerNode) -> PuzzleStateProvider?
+    func bind(provider: PuzzleStateProvider, for node: BoxLayoutNode)
+}
+
+extension BoxLayoutNodeHandler {
+    func bind(provider: PuzzleStateProvider, for node: BoxLayoutNode) {
+        if let node = node as? (BoxLayoutNode & AutoDisposable) {
+            node.bindBuiltinProvider(provider)
+        }
+    }
 }
