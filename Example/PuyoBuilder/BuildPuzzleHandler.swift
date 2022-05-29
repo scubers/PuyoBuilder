@@ -1,5 +1,5 @@
 //
-//  UIViewPuzzleView.swift
+//  BuildPuzzleHandler.swift
 //  PuyoBuilder_Example
 //
 //  Created by J on 2022/5/29.
@@ -7,10 +7,34 @@
 //
 
 import Puyopuyo
-import UIKit
+
+protocol BuildPuzzleHandler {
+    func shouldHandle(_ layerNode: LayerNode) -> Bool
+    func create(with layerNode: LayerNode) -> BoxLayoutNode?
+    func provider(with layerNode: LayerNode) -> PuzzleStateProvider?
+    func bind(provider: PuzzleStateProvider, for node: BoxLayoutNode)
+}
+
+extension BuildPuzzleHandler {
+    func _bind(provider: PuzzleStateProvider, for node: BoxLayoutNode) {
+        if let node = node as? (BoxLayoutNode & AutoDisposable) {
+            node.bindBuiltinProvider(provider)
+        }
+    }
+
+    func bind(provider: PuzzleStateProvider, for node: BoxLayoutNode) {
+        _bind(provider: provider, for: node)
+    }
+
+    func provider(with layerNode: LayerNode) -> PuzzleStateProvider? {
+        BasePuzzleStateProvider()
+    }
+}
+
+typealias PuzzlePiece = BoxLayoutNode & AutoDisposable
 
 extension BoxLayoutNode where Self: AutoDisposable {
-    private func _bind<O: Outputing, V>(_ output: O, action: @escaping (BoxLayoutNode & AutoDisposable, V) -> Void) where O.OutputType == V {
+    func _bind<O: Outputing, V>(_ output: O, action: @escaping (BoxLayoutNode & AutoDisposable, V) -> Void) where O.OutputType == V {
         addDisposer(output.outputing { [weak self] v in
             if let self = self {
                 action(self, v)
@@ -20,13 +44,14 @@ extension BoxLayoutNode where Self: AutoDisposable {
 
     func bindBuiltinProvider(_ provider: PuzzleStateProvider) {
         if let provider = provider as? BasePuzzleStateProvider {
-            _bind(provider.activated.state, action: { $0.layoutMeasure.activated = $1 })
-            _bind(provider.flowEnding.state, action: { $0.layoutMeasure.flowEnding = $1 })
-            _bind(provider.margin.state, action: { $0.layoutMeasure.margin = $1 })
-            _bind(provider.alignment.state, action: { $0.layoutMeasure.alignment = $1 })
-            _bind(provider.width.state, action: { $0.layoutMeasure.size.width = $1 })
-            _bind(provider.height.state, action: { $0.layoutMeasure.size.height = $1 })
-            _bind(provider.visibility.state, action: { $0.layoutVisibility = $1 })
+            attach()
+                .activated(provider.activated.state)
+                .flowEnding(provider.flowEnding.state)
+                .margin(provider.margin.state)
+                .alignment(provider.alignment.state)
+                .width(provider.width.state)
+                .height(provider.height.state)
+                .visibility(provider.visibility.state)
         }
 
         if let provider = provider as? BoxPuzzleStateProvider {

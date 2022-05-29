@@ -10,7 +10,7 @@ import Puyopuyo
 import UIKit
 
 struct InspectorViewFactory {
-    func createInspect(_ state: Inspectable) -> ViewDisplayable? {
+    func createInspect(_ state: IPuzzleState) -> ViewDisplayable? {
         if let state = state as? PuzzleState<Bool> {
             return BoolInspector().attach()
                 .setState(\.title, state.title)
@@ -39,7 +39,7 @@ struct InspectorViewFactory {
             let selected = state.state.map { v in
                 selection.firstIndex(where: { $0.value == v }) ?? 0
             }
-            SelectionInspector(title: state.title, selection: selection).attach()
+            return SelectionInspector(title: state.title, selection: selection).attach()
                 .state(selected)
                 .onEvent(state.state)
         }
@@ -51,7 +51,7 @@ struct InspectorViewFactory {
             let selected = state.state.map { v in
                 selection.firstIndex(where: { $0.value == v }) ?? 0
             }
-            SelectionInspector(title: state.title, selection: selection).attach()
+            return SelectionInspector(title: state.title, selection: selection).attach()
                 .state(selected)
                 .onEvent(state.state)
         }
@@ -92,6 +92,12 @@ struct InspectorViewFactory {
                 .setState(\.value, state.state.map { CGFloat($0) })
                 .onEvent(state.state.asInput { Int($0) })
         }
-        return nil
+        if let state = state as? PuzzleState<String> {
+            return StringInspector().attach()
+                .setState(\.title, state.title)
+                .setState(\.value, state.state)
+                .onEvent(state.state)
+        }
+        fatalError()
     }
 }

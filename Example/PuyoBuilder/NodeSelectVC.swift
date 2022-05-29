@@ -35,55 +35,13 @@ class NodeSelectVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        var list: [InitNodeModel] = [
-            .init(title: "LinearBox", layerNode: {
-                let node = LayerNode()
-                node.layoutType = .linear
-                node.nodeType = .box
-                return node
-            }()),
-            .init(title: "FlowBox", layerNode: {
-                let node = LayerNode()
-                node.layoutType = .flow
-                node.nodeType = .box
-                return node
-            }()),
-            .init(title: "ZBox", layerNode: {
-                let node = LayerNode()
-                node.layoutType = .z
-                node.nodeType = .box
-                return node
-            }()),
-            .init(title: "LinearGroup", layerNode: {
-                let node = LayerNode()
-                node.layoutType = .linear
-                node.nodeType = .group
-                return node
-            }()),
-            .init(title: "FlowGroup", layerNode: {
-                let node = LayerNode()
-                node.layoutType = .flow
-                node.nodeType = .group
-                return node
-            }()),
-            .init(title: "ZGroup", layerNode: {
-                let node = LayerNode()
-                node.layoutType = .z
-                node.nodeType = .group
-                return node
-            }()),
-            .init(title: "UILabel", layerNode: {
-                let node = LayerNode()
-                node.layoutType = .z
-                node.nodeType = .concrete
-                node.concreteViewType = "UILabel"
-                return node
-            }()),
-        ]
-
-        list = list.filter { model in
-            !isRoot || model.layerNode.nodeType == .box
-        }
+        let list = PuzzleManager.shared.templates
+            .map { template in
+                InitNodeModel(title: template.name, layerNode: template.initialNode)
+            }
+            .filter { model in
+                !isRoot || model.layerNode.nodeType == .box
+            }
 
         state.value = list
 

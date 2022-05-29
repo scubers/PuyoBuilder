@@ -68,8 +68,7 @@ class SizeDescriptionInspector: VBox, Stateful, Eventable {
             VFlow(count: 2).attach($0) {
                 PropsInputView().attach($0)
                     .setState(\.title, "Fix")
-                    .setState(\.default, 0)
-                    .setState(\.value, binder.fixedValue.distinct().map { Optional.some($0) })
+                    .setState(\.value, binder.fixedValue.distinct())
                     .visibility(binder.sizeType.map { ($0 == .fixed).py_visibleOrGone() })
                     .onEvent(to: self) { this, v in
                         this.notify(value: v, keyPath: \.fixedValue)
@@ -77,8 +76,7 @@ class SizeDescriptionInspector: VBox, Stateful, Eventable {
 
                 PropsInputView().attach($0)
                     .setState(\.title, "Ratio")
-                    .setState(\.default, 0)
-                    .setState(\.value, binder.ratio.distinct().map { Optional.some($0) })
+                    .setState(\.value, binder.ratio.distinct())
                     .visibility(binder.sizeType.map { ($0 == .ratio).py_visibleOrGone() })
                     .onEvent(to: self) { this, v in
                         this.notify(value: v, keyPath: \.ratio)
@@ -86,8 +84,7 @@ class SizeDescriptionInspector: VBox, Stateful, Eventable {
 
                 PropsInputView().attach($0)
                     .setState(\.title, "Aspect")
-                    .setState(\.default, 0)
-                    .setState(\.value, binder.aspectRatio.distinct().map { Optional.some($0) })
+                    .setState(\.value, binder.aspectRatio.distinct())
                     .visibility(binder.sizeType.map { ($0 == .aspectRatio).py_visibleOrGone() })
                     .onEvent(to: self) { this, v in
                         this.notify(value: v, keyPath: \.aspectRatio)
@@ -95,8 +92,7 @@ class SizeDescriptionInspector: VBox, Stateful, Eventable {
 
                 PropsInputView().attach($0)
                     .setState(\.title, "Shrink")
-                    .setState(\.default, 0)
-                    .setState(\.value, binder.shrink.distinct().map { Optional.some($0) })
+                    .setState(\.value, binder.shrink.distinct())
                     .visibility(binder.sizeType.map { ($0 == .wrap).py_visibleOrGone() })
                     .onEvent(to: self) { this, v in
                         this.notify(value: v, keyPath: \.shrink)
@@ -104,8 +100,7 @@ class SizeDescriptionInspector: VBox, Stateful, Eventable {
 
                 PropsInputView().attach($0)
                     .setState(\.title, "Grow")
-                    .setState(\.default, 0)
-                    .setState(\.value, binder.grow.distinct().map { Optional.some($0) })
+                    .setState(\.value, binder.grow.distinct())
                     .visibility(binder.sizeType.map { ($0 == .wrap).py_visibleOrGone() })
                     .onEvent(to: self) { this, v in
                         this.notify(value: v, keyPath: \.grow)
@@ -113,8 +108,7 @@ class SizeDescriptionInspector: VBox, Stateful, Eventable {
 
                 PropsInputView().attach($0)
                     .setState(\.title, "Priority")
-                    .setState(\.default, 0)
-                    .setState(\.value, binder.priority.distinct().map { Optional.some($0) })
+                    .setState(\.value, binder.priority.distinct())
                     .visibility(binder.sizeType.map { ($0 == .wrap).py_visibleOrGone() })
                     .onEvent(to: self) { this, v in
                         this.notify(value: v, keyPath: \.priority)
@@ -122,8 +116,7 @@ class SizeDescriptionInspector: VBox, Stateful, Eventable {
 
                 PropsInputView().attach($0)
                     .setState(\.title, "Add")
-                    .setState(\.default, 0)
-                    .setState(\.value, binder.add.distinct().map { Optional.some($0) })
+                    .setState(\.value, binder.add.distinct())
                     .visibility(binder.sizeType.map { ($0 == .wrap).py_visibleOrGone() })
                     .onEvent(to: self) { this, v in
                         this.notify(value: v, keyPath: \.add)
@@ -131,8 +124,7 @@ class SizeDescriptionInspector: VBox, Stateful, Eventable {
 
                 PropsInputView().attach($0)
                     .setState(\.title, "Max")
-                    .setState(\.default, 0)
-                    .setState(\.value, binder.max.distinct().map { Optional.some($0) })
+                    .setState(\.value, binder.max.distinct())
                     .visibility(binder.sizeType.map { ($0 == .wrap).py_visibleOrGone() })
                     .onEvent(to: self) { this, v in
                         this.notify(value: v, keyPath: \.max)
@@ -140,8 +132,7 @@ class SizeDescriptionInspector: VBox, Stateful, Eventable {
 
                 PropsInputView().attach($0)
                     .setState(\.title, "Min")
-                    .setState(\.default, 0)
-                    .setState(\.value, binder.min.distinct().map { Optional.some($0) })
+                    .setState(\.value, binder.min.distinct())
                     .visibility(binder.sizeType.map { ($0 == .wrap).py_visibleOrGone() })
                     .onEvent(to: self) { this, v in
                         this.notify(value: v, keyPath: \.min)
@@ -151,7 +142,7 @@ class SizeDescriptionInspector: VBox, Stateful, Eventable {
                     .width(.fill)
                     .visibility(binder.sizeType.map { ($0 != .wrap).py_visibleOrGone() })
             }
-            .itemSpace(4)
+            .space(4)
             .width(.fill)
         }
         .justifyContent(.left)

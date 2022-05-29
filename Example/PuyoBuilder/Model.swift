@@ -17,61 +17,7 @@ class LayerCanvas: HandyJSON {
 
     var root: LayerNode?
 
-    struct FindNodeResult {
-        let parent: LayerNode?
-        let target: LayerNode
-    }
-
-    func findNode(by id: String) -> FindNodeResult? {
-        guard let root = root else {
-            return nil
-        }
-
-        if root.id == id {
-            return .init(parent: nil, target: root)
-        } else {
-            func findChild(for node: LayerNode, id: String) -> FindNodeResult? {
-                if let index = node.children.firstIndex(where: { $0.id == id }) {
-                    return .init(parent: node, target: node.children[index])
-                } else {
-                    for child in node.children {
-                        if let target = findChild(for: child, id: id) {
-                            return target
-                        }
-                    }
-                    return nil
-                }
-            }
-
-            return findChild(for: root, id: id)
-        }
-    }
-
-    func repaceRoot(_ node: LayerNode?) {
-        root = node
-    }
-
-    @discardableResult
-    func removeNode(_ id: String) -> LayerNode? {
-        if root?.id == id {
-            let ret = root
-            root = nil
-            return ret
-        }
-
-        guard let result = findNode(by: id) else {
-            return nil
-        }
-
-        result.parent?.children.removeAll(where: { $0 === result.target })
-
-        return result.target
-    }
-
-    func appendNode(_ node: LayerNode, for id: String) {
-        let ret = findNode(by: id)
-        ret?.target.children.append(node)
-    }
+   
 }
 
 class LayerNode: HandyJSON {
@@ -89,7 +35,12 @@ class LayerNode: HandyJSON {
         case z
     }
 
-    let id = UUID().description
+    func config(_ action: (LayerNode) -> Void) -> LayerNode {
+        action(self)
+        return self
+    }
+
+    var id = UUID().description
 
     /// layout or normal view
     var nodeType: NodeType = .box

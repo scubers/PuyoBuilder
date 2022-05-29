@@ -38,37 +38,33 @@ class InsetsInspector: VBox, Stateful, Eventable {
             VFlow(count: 2).attach($0) {
                 PropsInputView().attach($0)
                     .setState(\.title, "Top")
-                    .setState(\.default, 0)
-                    .setState(\.value, binder.insets.top.distinct().map { Optional.some($0) })
+                    .setState(\.value, binder.insets.top.distinct())
                     .onEvent(to: self) { this, v in
                         this.notify(v, keyPath: \.insets.top)
                     }
 
                 PropsInputView().attach($0)
                     .setState(\.title, "Left")
-                    .setState(\.default, 0)
-                    .setState(\.value, binder.insets.left.distinct().map { Optional.some($0) })
+                    .setState(\.value, binder.insets.left.distinct())
                     .onEvent(to: self) { this, v in
                         this.notify(v, keyPath: \.insets.left)
                     }
 
                 PropsInputView().attach($0)
                     .setState(\.title, "Bottom")
-                    .setState(\.default, 0)
-                    .setState(\.value, binder.insets.bottom.distinct().map { Optional.some($0) })
+                    .setState(\.value, binder.insets.bottom.distinct())
                     .onEvent(to: self) { this, v in
                         this.notify(v, keyPath: \.insets.bottom)
                     }
 
                 PropsInputView().attach($0)
                     .setState(\.title, "Right")
-                    .setState(\.default, 0)
-                    .setState(\.value, binder.insets.right.distinct().map { Optional.some($0) })
+                    .setState(\.value, binder.insets.right.distinct())
                     .onEvent(to: self) { this, v in
                         this.notify(v, keyPath: \.insets.right)
                     }
             }
-            .itemSpace(4)
+            .space(4)
             .width(.fill)
         }
         .justifyContent(.left)

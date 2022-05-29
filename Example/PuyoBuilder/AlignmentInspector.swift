@@ -48,6 +48,15 @@ class AlignmentInspector: VBox, Stateful, Eventable {
         if selected.contains(alignment) {
             selected.remove(alignment)
         } else {
+            switch alignment {
+            case .left: selected.remove([.right, .horzCenter])
+            case .right: selected.remove([.left, .horzCenter])
+            case .top: selected.remove([.bottom, .vertCenter])
+            case .bottom: selected.remove([.top, .vertCenter])
+            case .horzCenter: selected.remove([.left, .right])
+            case .vertCenter: selected.remove([.top, .bottom])
+            default: break
+            }
             selected.insert(alignment)
         }
         state.value.alignment = selected

@@ -21,6 +21,12 @@ class SelectorButton: ZBox, Stateful {
         attach {
             UILabel().attach($0)
                 .text(binder.title)
+                .textColor(binder.selected.map { v -> UIColor in
+                    if v {
+                        return UIColor.white
+                    }
+                    return UIColor.label
+                })
         }
         .set(\.layer.borderColor, UIColor.systemBlue.cgColor)
         .set(\.layer.borderWidth, 1)
@@ -32,7 +38,6 @@ class SelectorButton: ZBox, Stateful {
             }
             return UIColor.clear
         })
-//        .padding(horz: 3, vert: 2)
         .padding(all: 4)
     }
 }

@@ -9,7 +9,7 @@
 import Foundation
 import Puyopuyo
 
-class SelectionInspector<V>: HBox, Stateful, Eventable {
+class SelectionInspector<V>: VBox, Stateful, Eventable {
     private let selection: [Selection<V>]
     let title: String
     init(title: String, selection: [Selection<V>]) {
@@ -30,10 +30,11 @@ class SelectionInspector<V>: HBox, Stateful, Eventable {
     override func buildBody() {
         let state = self.state
         attach {
-            PropsTitleView().attach($0)
+            PropsSectionTitleView().attach($0)
                 .text(title)
-                .textAlignment(.center)
+                .textAlignment(.left)
                 .margin(vert: 8)
+                .width(.fill)
 
             VFlowGroup().attach($0) {
                 for (idx, selector) in selection.enumerated() {
@@ -49,7 +50,7 @@ class SelectionInspector<V>: HBox, Stateful, Eventable {
             .space(4)
             .width(.fill)
         }
-        .space(8)
+        .space(4)
         .width(.fill)
         .backgroundColor(.secondarySystemGroupedBackground)
         .padding(all: 8)

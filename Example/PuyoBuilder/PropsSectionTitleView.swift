@@ -13,7 +13,7 @@ class PropsSectionTitleView: UILabel {
         super.init(frame: .zero)
 
         attach()
-            .fontSize(18, weight: .bold)
+            .fontSize(16, weight: .bold)
             .numberOfLines(0)
     }
 

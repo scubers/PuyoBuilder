@@ -22,7 +22,7 @@ class LayerPanel: ZBox {
     }
 
     override func buildBody() {
-        let empty = store.onChanged.binder.empty.debounce(interval: 0.1)
+        let empty = store.root.map { $0 == nil }.debounce(interval: 0.1)
 
         let this = WeakableObject<LayerPanel>(value: self)
 
@@ -95,8 +95,8 @@ class LayerPanel: ZBox {
     }
 
     var items: Outputs<[LayerPanelItem]> {
-        store.onChanged.map { store in
-            guard let root = store.root else {
+        store.root.map { root in
+            guard let root = root else {
                 return []
             }
             var items = [LayerPanelItem]()
@@ -113,20 +113,20 @@ class LayerPanel: ZBox {
 
     func chooseRootBox() {
         let vc = NodeSelectVC(isRoot: true) {
-            self.store.replaceRoot($0)
+            self.store.repaceRoot($0)
         }
         findTopViewController(for: self)?.present(vc, animated: true)
     }
 
     func addChild(for id: String) {
         let vc = NodeSelectVC(isRoot: false) {
-            self.store.appendNode($0, id: id)
+            self.store.appendNode($0, for: id)
         }
         findTopViewController(for: self)?.present(vc, animated: true)
     }
 
     func removeSelf(id: String) {
-        store.removeNode(id)
+        _ = store.removeNode(id)
     }
 }
 

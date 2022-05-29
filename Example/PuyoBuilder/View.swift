@@ -19,14 +19,13 @@ class CanvasView: ZBox {
 
         buildCanvas()
 
-        store.onChanged.binder.canvasSize.distinct().safeBind(to: self) { this, v in
-            this.layoutMeasure.size = Size(width: .fix(v.width), height: .fix(v.height))
+        store.root.safeBind(to: self) { this, _ in
+            this.buildCanvas()
         }
-        
+
         attach().backgroundColor(.secondarySystemBackground)
-            .size(store.canvasSize.width, store.canvasSize.height)
+            .size(store.canvasSize.map { Size(width: .fix($0.width), height: .fix($0.height)) })
             .animator(CanvasAnimator())
-        
     }
 
     @available(*, unavailable)
@@ -35,6 +34,8 @@ class CanvasView: ZBox {
     }
 
     func buildCanvas() {
+        layoutChildren.forEach { $0.removeFromSuperBox() }
+        subviews.forEach { $0.removeFromSuperview() }
         if let node = store.buildRoot(), let view = node.layoutNodeView {
             addSubview(view)
         }

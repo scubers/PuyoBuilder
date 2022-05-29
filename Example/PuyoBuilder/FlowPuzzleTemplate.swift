@@ -1,5 +1,5 @@
 //
-//  FlowNodeHandler.swift
+//  LinearPuzzleTemplate.swift
 //  PuyoBuilder_Example
 //
 //  Created by J on 2022/5/29.
@@ -7,9 +7,36 @@
 //
 
 import Foundation
+
 import Puyopuyo
 
-struct FlowNodeHandler: BoxLayoutNodeHandler {
+class FlowBoxPuzzleTemplate: PuzzleTemplate {
+    var name: String { "FlowBox" }
+
+    var initialNode: LayerNode {
+        .init().config { n in
+            n.nodeType = .box
+            n.layoutType = .flow
+        }
+    }
+
+    var builderHandler: BuildPuzzleHandler { FlowBuildPuzzleHandler() }
+}
+
+class FlowGroupPuzzleTemplate: PuzzleTemplate {
+    var name: String { "FlowGroup" }
+
+    var initialNode: LayerNode {
+        .init().config { n in
+            n.nodeType = .group
+            n.layoutType = .flow
+        }
+    }
+
+    var builderHandler: BuildPuzzleHandler { FlowBuildPuzzleHandler() }
+}
+
+struct FlowBuildPuzzleHandler: BuildPuzzleHandler {
     func shouldHandle(_ layerNode: LayerNode) -> Bool {
         layerNode.concreteViewType == nil && layerNode.nodeType != .concrete && layerNode.layoutType == .flow
     }

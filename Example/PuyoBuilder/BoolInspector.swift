@@ -21,7 +21,7 @@ class BoolInspector: HBox, Stateful, Eventable {
     override func buildBody() {
         let this = WeakableObject(value: self)
         attach {
-            PropsTitleView().attach($0)
+            PropsSectionTitleView().attach($0)
                 .text(binder.title)
                 .textAlignment(.center)
                 .margin(vert: 8)
@@ -36,5 +36,6 @@ class BoolInspector: HBox, Stateful, Eventable {
         .width(.fill)
         .backgroundColor(.secondarySystemGroupedBackground)
         .padding(all: 8)
+        .justifyContent(.center)
     }
 }

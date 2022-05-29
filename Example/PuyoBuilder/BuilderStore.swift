@@ -9,74 +9,83 @@
 import Foundation
 import Puyopuyo
 
-class BuilderStore: ChangeNotifier {
-    var changeNotifier: Outputs<Void> { notifier.asOutput() }
-
-    private let notifier = SimpleIO<Void>()
-
-    private var canvas: LayerCanvas = .init()
-
+class BuilderStore {
     private var providers = [String: PuzzleStateProvider]()
-
-    private func notify() {
-        notifier.input(value: ())
-    }
 
     func getProvider(_ id: String) -> PuzzleStateProvider? {
         providers[id]
     }
 
-    var canvasSize: CGSize {
-        CGSize(width: canvas.width, height: canvas.height)
-    }
-
-    var empty: Bool { canvas.root == nil }
-
-    var root: LayerNode? { canvas.root }
+    let root = State<LayerNode?>(nil)
 
     let selected = State<String?>(nil)
 
-    var handlers: [BoxLayoutNodeHandler] {
-        [
-            UIViewNodeHandler(),
-            UILabelNodeHandler(),
-            LinearNodeHandler(),
-            ZNodeHandler(),
-            FlowNodeHandler(),
-        ]
+    let canvasSize = State(CGSize(width: 200, height: 200))
+
+    var handlers: [BuildPuzzleHandler] {
+        PuzzleManager.shared.templates.map(\.builderHandler)
     }
 }
 
 // MARK: - Structure change
 
 extension BuilderStore {
-    func changeCanvasSize(_ size: CGSize) {
-        canvas.width = size.width
-        canvas.height = size.height
-        notify()
+    struct FindNodeResult {
+        let parent: LayerNode?
+        let target: LayerNode
     }
 
-    func replaceRoot(_ root: LayerNode?) {
-        canvas.repaceRoot(root)
-        notify()
-    }
-
-    func removeNode(_ id: String) {
-        canvas.removeNode(id)
-        providers.removeValue(forKey: id)
-        if selected.value == id {
-            selected.value = nil
+    func findNode(by id: String) -> FindNodeResult? {
+        guard let root = root.value else {
+            return nil
         }
-        notify()
+
+        if root.id == id {
+            return .init(parent: nil, target: root)
+        } else {
+            func findChild(for node: LayerNode, id: String) -> FindNodeResult? {
+                if let index = node.children.firstIndex(where: { $0.id == id }) {
+                    return .init(parent: node, target: node.children[index])
+                } else {
+                    for child in node.children {
+                        if let target = findChild(for: child, id: id) {
+                            return target
+                        }
+                    }
+                    return nil
+                }
+            }
+
+            return findChild(for: root, id: id)
+        }
     }
 
-    func appendNode(_ node: LayerNode, id: String) {
-        canvas.appendNode(node, for: id)
-        notify()
+    func repaceRoot(_ node: LayerNode?) {
+        root.value = node
     }
 
-    func findNode(by id: String) -> LayerNode? {
-        canvas.findNode(by: id)?.target
+    func removeNode(_ id: String) -> LayerNode? {
+        if root.value?.id == id {
+            let ret = root.value
+            root.value = nil
+            return ret
+        }
+
+        guard let result = findNode(by: id) else {
+            return nil
+        }
+
+        result.parent?.children.removeAll(where: { $0 === result.target })
+
+        root.resend()
+
+        return result.target
+    }
+
+    func appendNode(_ node: LayerNode, for id: String) {
+        let ret = findNode(by: id)
+        ret?.target.children.append(node)
+        root.resend()
     }
 }
 
@@ -84,14 +93,14 @@ extension BuilderStore {
 
 extension BuilderStore {
     func buildRoot() -> BoxLayoutNode? {
-        if let root = canvas.root {
+        if let root = root.value {
             return buildBoxLayoutNode(root)
         }
         return nil
     }
 
-    func buildBoxLayoutNode(_ node: LayerNode) -> BoxLayoutNode {
-        var result: BoxLayoutNode!
+    func buildBoxLayoutNode(_ node: LayerNode) -> BoxLayoutNode? {
+        var result: BoxLayoutNode?
         for handler in handlers {
             if let nodeResult = handler.create(with: node) {
                 if let provider = providers[node.id] ?? handler.provider(with: node) {
@@ -106,38 +115,20 @@ extension BuilderStore {
         // children
         if let container = result as? BoxLayoutContainer {
             node.children.forEach { child in
-                let childNode = buildBoxLayoutNode(child)
-                container.addLayoutNode(childNode)
+                if let childNode = buildBoxLayoutNode(child) {
+                    container.addLayoutNode(childNode)
+                }
             }
         }
 
-        return result
-    }
-}
-
-extension BoxLayoutNode {
-    func getRegulator() -> Regulator? { layoutMeasure as? Regulator }
-    func getLinearRegulator() -> LinearRegulator? { layoutMeasure as? LinearRegulator }
-    func getFlowRegulator() -> FlowRegulator? { layoutMeasure as? FlowRegulator }
-    func getZRegulator() -> ZRegulator? { layoutMeasure as? ZRegulator }
-}
-
-struct BoxLayoutNodeCreateResult {
-    var node: BoxLayoutNode
-    var provider: PuzzleStateProvider
-}
-
-protocol BoxLayoutNodeHandler {
-    func shouldHandle(_ layerNode: LayerNode) -> Bool
-    func create(with layerNode: LayerNode) -> BoxLayoutNode?
-    func provider(with layerNode: LayerNode) -> PuzzleStateProvider?
-    func bind(provider: PuzzleStateProvider, for node: BoxLayoutNode)
-}
-
-extension BoxLayoutNodeHandler {
-    func bind(provider: PuzzleStateProvider, for node: BoxLayoutNode) {
-        if let node = node as? (BoxLayoutNode & AutoDisposable) {
-            node.bindBuiltinProvider(provider)
+        if result == nil {
+            print("Unsupported node: \(node)")
         }
+
+        if let view = result?.layoutNodeView {
+            view.backgroundColor = Helper.randomColor()
+        }
+
+        return result
     }
 }

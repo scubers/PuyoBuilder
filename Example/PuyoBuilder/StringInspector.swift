@@ -9,14 +9,14 @@
 import Foundation
 import Puyopuyo
 
-class CGFloatInspector: VBox, Stateful, Eventable {
+class StringInspector: VBox, Stateful, Eventable {
     struct ViewState {
         var title: String
-        var value: CGFloat
+        var value: String
     }
 
-    let state = State(ViewState(title: "", value: 0))
-    let emitter = SimpleIO<CGFloat>()
+    let state = State(ViewState(title: "", value: ""))
+    let emitter = SimpleIO<String>()
 
     override func buildBody() {
         attach {
@@ -24,10 +24,15 @@ class CGFloatInspector: VBox, Stateful, Eventable {
                 .text(binder.title)
                 .width(.fill)
 
-            CGFloatInputView().attach($0)
-                .state(binder.value)
-                .onEvent(emitter)
+            UITextField().attach($0)
+                .text(binder.value.distinct())
+                .onControlEvent(.editingChanged, emitter.asInput { $0.text ?? "" })
                 .width(.fill)
+                .height(.wrap(min: 30))
+                .margin(all: 4)
+                .borderWidth(1)
+                .cornerRadius(4)
+                .clipToBounds(true)
         }
         .width(.fill)
         .backgroundColor(.secondarySystemGroupedBackground)
