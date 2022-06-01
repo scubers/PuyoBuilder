@@ -11,7 +11,7 @@ import Puyopuyo
 class UIViewPuzzleTemplate: PuzzleTemplate {
     var name: String { "UIView" }
 
-    var initialNode: LayerNode {
+    var initialNode: PuzzleNode {
         .init().config { n in
             n.nodeType = .concrete
             n.concreteViewType = "UIView"
@@ -22,18 +22,18 @@ class UIViewPuzzleTemplate: PuzzleTemplate {
 }
 
 struct UIViewBuildPuzzleHandler: BuildPuzzleHandler {
-    func shouldHandle(_ layerNode: LayerNode) -> Bool {
+    func shouldHandle(_ layerNode: PuzzleNode) -> Bool {
         layerNode.concreteViewType == "UIView"
     }
 
-    func create(with layerNode: LayerNode) -> BoxLayoutNode? {
+    func create(with layerNode: PuzzleNode) -> BoxLayoutNode? {
         guard layerNode.concreteViewType == "UIView" else {
             return nil
         }
         return UIView()
     }
 
-    func provider(with layerNode: LayerNode) -> PuzzleStateProvider? {
+    func provider(with layerNode: PuzzleNode) -> PuzzleStateProvider? {
         BasePuzzleStateProvider()
     }
 }

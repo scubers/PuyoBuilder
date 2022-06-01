@@ -100,7 +100,7 @@ class LayerPanel: ZBox {
                 return []
             }
             var items = [LayerPanelItem]()
-            func deep(node: LayerNode, depth: Int) {
+            func deep(node: PuzzleNode, depth: Int) {
                 items.append(.init(depth: depth, node: node))
                 node.children.forEach { child in
                     deep(node: child, depth: depth + 1)
@@ -132,5 +132,5 @@ class LayerPanel: ZBox {
 
 struct LayerPanelItem {
     var depth: Int
-    var node: LayerNode
+    var node: PuzzleNode
 }

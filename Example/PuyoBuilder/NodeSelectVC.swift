@@ -11,15 +11,15 @@ import UIKit
 
 struct InitNodeModel {
     var title: String
-    var layerNode: LayerNode
+    var layerNode: PuzzleNode
 }
 
 class NodeSelectVC: UIViewController {
     private let isRoot: Bool
 
-    private let onResult: (LayerNode) -> Void
+    private let onResult: (PuzzleNode) -> Void
 
-    init(isRoot: Bool, onResult: @escaping (LayerNode) -> Void = { _ in }) {
+    init(isRoot: Bool, onResult: @escaping (PuzzleNode) -> Void = { _ in }) {
         self.isRoot = isRoot
         self.onResult = onResult
         super.init(nibName: nil, bundle: nil)

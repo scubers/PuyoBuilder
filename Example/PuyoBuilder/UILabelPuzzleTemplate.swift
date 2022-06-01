@@ -11,7 +11,7 @@ import Puyopuyo
 class UILabelPuzzleTemplate: PuzzleTemplate {
     var name: String { "UILabel" }
 
-    var initialNode: LayerNode {
+    var initialNode: PuzzleNode {
         .init().config { n in
             n.nodeType = .concrete
             n.concreteViewType = "UILabel"
@@ -22,11 +22,11 @@ class UILabelPuzzleTemplate: PuzzleTemplate {
 }
 
 struct UILabelBuildPuzzleHandler: BuildPuzzleHandler {
-    func shouldHandle(_ layerNode: LayerNode) -> Bool {
+    func shouldHandle(_ layerNode: PuzzleNode) -> Bool {
         layerNode.concreteViewType == "UILabel"
     }
 
-    func create(with layerNode: LayerNode) -> BoxLayoutNode? {
+    func create(with layerNode: PuzzleNode) -> BoxLayoutNode? {
         guard shouldHandle(layerNode) else {
             return nil
         }
@@ -34,7 +34,7 @@ struct UILabelBuildPuzzleHandler: BuildPuzzleHandler {
         return UILabel()
     }
 
-    func provider(with layerNode: LayerNode) -> PuzzleStateProvider? {
+    func provider(with layerNode: PuzzleNode) -> PuzzleStateProvider? {
         UILabelPuzzleStateProvider()
     }
 

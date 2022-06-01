@@ -13,7 +13,7 @@ import Puyopuyo
 class ZBoxPuzzleTemplate: PuzzleTemplate {
     var name: String { "ZBox" }
 
-    var initialNode: LayerNode {
+    var initialNode: PuzzleNode {
         .init().config { n in
             n.nodeType = .box
             n.layoutType = .z
@@ -26,7 +26,7 @@ class ZBoxPuzzleTemplate: PuzzleTemplate {
 class ZGroupPuzzleTemplate: PuzzleTemplate {
     var name: String { "ZGroup" }
 
-    var initialNode: LayerNode {
+    var initialNode: PuzzleNode {
         .init().config { n in
             n.nodeType = .group
             n.layoutType = .z
@@ -37,18 +37,18 @@ class ZGroupPuzzleTemplate: PuzzleTemplate {
 }
 
 struct ZBuildPuzzleHandler: BuildPuzzleHandler {
-    func shouldHandle(_ layerNode: LayerNode) -> Bool {
+    func shouldHandle(_ layerNode: PuzzleNode) -> Bool {
         layerNode.concreteViewType == nil && layerNode.nodeType != .concrete && layerNode.layoutType == .z
     }
 
-    func create(with layerNode: LayerNode) -> BoxLayoutNode? {
+    func create(with layerNode: PuzzleNode) -> BoxLayoutNode? {
         guard shouldHandle(layerNode) else {
             return nil
         }
         return layerNode.nodeType == .box ? ZBox() : ZGroup()
     }
 
-    func provider(with layerNode: LayerNode) -> PuzzleStateProvider? {
+    func provider(with layerNode: PuzzleNode) -> PuzzleStateProvider? {
         ZPuzzleStateProvider()
     }
 }

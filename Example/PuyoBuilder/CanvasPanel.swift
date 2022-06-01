@@ -66,6 +66,24 @@ class CanvasPanel: ZBox {
                         this.value?.store.canvasSize.value.height = $0
                     })
                     .width(.fill)
+
+                HGroup().attach($0) {
+                    SelectorButton().attach($0)
+                        .state(.init(selected: false, title: "Export"))
+                        .onTap(to: self) { this, _ in
+                            if let json = this.store.exportJson(prettyPrinted: true) {
+                                print(this.store.exportJson(prettyPrinted: false) ?? "")
+                                findTopViewController(for: this)?.present(JsonViewVC(store: this.store, json: json), animated: true)
+                            }
+                        }
+                    SelectorButton().attach($0)
+                        .state(.init(selected: false, title: "Import"))
+                        .onTap(to: self) { this, _ in
+                            findTopViewController(for: this)?.present(JsonViewVC(store: this.store, json: ""), animated: true)
+                        }
+                }
+                .width(.fill)
+                .space(8)
             }
             .width(150)
             .clipToBounds(true)

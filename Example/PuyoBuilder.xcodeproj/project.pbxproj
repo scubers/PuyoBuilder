@@ -39,6 +39,7 @@
 		096A9FD8283BF3F500C6283E /* CanvasAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 096A9FD7283BF3F500C6283E /* CanvasAnimator.swift */; };
 		09795637284367B000E4BB56 /* InspectorViewFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09795636284367B000E4BB56 /* InspectorViewFactory.swift */; };
 		0979563A284382ED00E4BB56 /* PuzzleManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09795639284382ED00E4BB56 /* PuzzleManager.swift */; };
+		09954F6C2847C75B005B402A /* JsonViewVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09954F6B2847C75B005B402A /* JsonViewVC.swift */; };
 		28211C85A23069A1DD202176 /* Pods_PuyoBuilder_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04A1C3D714D6E8756DD08471 /* Pods_PuyoBuilder_Example.framework */; };
 		28EA1FB33035E0FAAA1AEF6D /* Pods_PuyoBuilder_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C14E97FE272F2E9C82E46408 /* Pods_PuyoBuilder_Tests.framework */; };
 		607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD51AFB9204008FA782 /* AppDelegate.swift */; };
@@ -95,6 +96,7 @@
 		096A9FD7283BF3F500C6283E /* CanvasAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasAnimator.swift; sourceTree = "<group>"; };
 		09795636284367B000E4BB56 /* InspectorViewFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectorViewFactory.swift; sourceTree = "<group>"; };
 		09795639284382ED00E4BB56 /* PuzzleManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PuzzleManager.swift; sourceTree = "<group>"; };
+		09954F6B2847C75B005B402A /* JsonViewVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JsonViewVC.swift; sourceTree = "<group>"; };
 		263A03F08B4D1DD062C03527 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		5B0B1B1109CA217CF1EBDB36 /* PuyoBuilder.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = PuyoBuilder.podspec; path = ../PuyoBuilder.podspec; sourceTree = "<group>"; };
 		607FACD01AFB9204008FA782 /* PuyoBuilder_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PuyoBuilder_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -146,28 +148,16 @@
 			name = Template;
 			sourceTree = "<group>";
 		};
-		096A9FA72839539000C6283E /* Model */ = {
-			isa = PBXGroup;
-			children = (
-				096A9FA8283953A000C6283E /* Model.swift */,
-			);
-			name = Model;
-			sourceTree = "<group>";
-		};
 		096A9FAA283953A300C6283E /* View */ = {
 			isa = PBXGroup;
 			children = (
+				09954F6A2847C74D005B402A /* JsonView */,
+				09954F692847C732005B402A /* CommonView */,
+				09954F682847C71B005B402A /* PropsPanel */,
+				09954F672847C710005B402A /* CanvalPanel */,
+				09954F662847C6FD005B402A /* LayerPanel */,
 				096A9FD4283BE85000C6283E /* NodeSelector */,
 				096A9FC1283A987F00C6283E /* Inspectors */,
-				096A9FAB283953AA00C6283E /* View.swift */,
-				096A9FB5283A148800C6283E /* LayerPanel.swift */,
-				096A9FB7283A14E800C6283E /* CanvasPanel.swift */,
-				096A9FB9283A14F000C6283E /* PropsPanel.swift */,
-				096A9FBB283A2CBD00C6283E /* SingleSelectVC.swift */,
-				096A9FBD283A369300C6283E /* PropsSectionTitleView.swift */,
-				096A9FBF283A37B800C6283E /* DropDownableView.swift */,
-				096A9FD0283BD46C00C6283E /* SelectorButton.swift */,
-				0956C5C42843890C001A7F8F /* CGFloatInputView.swift */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -218,11 +208,57 @@
 			isa = PBXGroup;
 			children = (
 				0956C5B928438445001A7F8F /* Template */,
+				096A9FA8283953A000C6283E /* Model.swift */,
 				09795639284382ED00E4BB56 /* PuzzleManager.swift */,
 				0956C5B62843837A001A7F8F /* BuildPuzzleHandler.swift */,
 				096A9FB3283A01FF00C6283E /* PuzzleState.swift */,
 			);
 			name = Puzzle;
+			sourceTree = "<group>";
+		};
+		09954F662847C6FD005B402A /* LayerPanel */ = {
+			isa = PBXGroup;
+			children = (
+				096A9FB5283A148800C6283E /* LayerPanel.swift */,
+			);
+			name = LayerPanel;
+			sourceTree = "<group>";
+		};
+		09954F672847C710005B402A /* CanvalPanel */ = {
+			isa = PBXGroup;
+			children = (
+				096A9FAB283953AA00C6283E /* View.swift */,
+				096A9FB7283A14E800C6283E /* CanvasPanel.swift */,
+			);
+			name = CanvalPanel;
+			sourceTree = "<group>";
+		};
+		09954F682847C71B005B402A /* PropsPanel */ = {
+			isa = PBXGroup;
+			children = (
+				096A9FB9283A14F000C6283E /* PropsPanel.swift */,
+			);
+			name = PropsPanel;
+			sourceTree = "<group>";
+		};
+		09954F692847C732005B402A /* CommonView */ = {
+			isa = PBXGroup;
+			children = (
+				096A9FBB283A2CBD00C6283E /* SingleSelectVC.swift */,
+				096A9FBD283A369300C6283E /* PropsSectionTitleView.swift */,
+				096A9FBF283A37B800C6283E /* DropDownableView.swift */,
+				096A9FD0283BD46C00C6283E /* SelectorButton.swift */,
+				0956C5C42843890C001A7F8F /* CGFloatInputView.swift */,
+			);
+			name = CommonView;
+			sourceTree = "<group>";
+		};
+		09954F6A2847C74D005B402A /* JsonView */ = {
+			isa = PBXGroup;
+			children = (
+				09954F6B2847C75B005B402A /* JsonViewVC.swift */,
+			);
+			name = JsonView;
 			sourceTree = "<group>";
 		};
 		607FACC71AFB9204008FA782 = {
@@ -254,7 +290,6 @@
 				096A9FB02839F8C200C6283E /* Store */,
 				096A9FAD283953AC00C6283E /* Helper */,
 				096A9FAA283953A300C6283E /* View */,
-				096A9FA72839539000C6283E /* Model */,
 				607FACD51AFB9204008FA782 /* AppDelegate.swift */,
 				607FACD71AFB9204008FA782 /* ViewController.swift */,
 				607FACD91AFB9204008FA782 /* Main.storyboard */,
@@ -517,6 +552,7 @@
 				0956C5BD2843856C001A7F8F /* LinearPuzzleTemplate.swift in Sources */,
 				096A9FD3283BDA8E00C6283E /* CGFloatInspector.swift in Sources */,
 				0956C5C52843890C001A7F8F /* CGFloatInputView.swift in Sources */,
+				09954F6C2847C75B005B402A /* JsonViewVC.swift in Sources */,
 				096A9FC0283A37B800C6283E /* DropDownableView.swift in Sources */,
 				096A9FBA283A14F000C6283E /* PropsPanel.swift in Sources */,
 				096A9FC3283A989300C6283E /* SizeDescriptionInspector.swift in Sources */,

@@ -9,9 +9,9 @@
 import Puyopuyo
 
 protocol BuildPuzzleHandler {
-    func shouldHandle(_ layerNode: LayerNode) -> Bool
-    func create(with layerNode: LayerNode) -> BoxLayoutNode?
-    func provider(with layerNode: LayerNode) -> PuzzleStateProvider?
+    func shouldHandle(_ layerNode: PuzzleNode) -> Bool
+    func create(with layerNode: PuzzleNode) -> BoxLayoutNode?
+    func provider(with layerNode: PuzzleNode) -> PuzzleStateProvider?
     func bind(provider: PuzzleStateProvider, for node: BoxLayoutNode)
 }
 
@@ -26,8 +26,10 @@ extension BuildPuzzleHandler {
         _bind(provider: provider, for: node)
     }
 
-    func provider(with layerNode: LayerNode) -> PuzzleStateProvider? {
-        BasePuzzleStateProvider()
+    func createProviderAndBind(with layerNode: PuzzleNode) -> PuzzleStateProvider? {
+        let provider = provider(with: layerNode)
+        provider?.bind(node: layerNode)
+        return provider
     }
 }
 

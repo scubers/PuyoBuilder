@@ -13,7 +13,7 @@ import Puyopuyo
 class LinearBoxPuzzleTemplate: PuzzleTemplate {
     var name: String { "LinearBox" }
 
-    var initialNode: LayerNode {
+    var initialNode: PuzzleNode {
         .init().config { n in
             n.nodeType = .box
             n.layoutType = .linear
@@ -26,7 +26,7 @@ class LinearBoxPuzzleTemplate: PuzzleTemplate {
 class LinearGroupPuzzleTemplate: PuzzleTemplate {
     var name: String { "LinearGroup" }
 
-    var initialNode: LayerNode {
+    var initialNode: PuzzleNode {
         .init().config { n in
             n.nodeType = .group
             n.layoutType = .linear
@@ -37,11 +37,11 @@ class LinearGroupPuzzleTemplate: PuzzleTemplate {
 }
 
 struct LinearBuildPuzzleHandler: BuildPuzzleHandler {
-    func shouldHandle(_ layerNode: LayerNode) -> Bool {
+    func shouldHandle(_ layerNode: PuzzleNode) -> Bool {
         layerNode.concreteViewType == nil && layerNode.nodeType != .concrete && layerNode.layoutType == .linear
     }
 
-    func create(with layerNode: LayerNode) -> BoxLayoutNode? {
+    func create(with layerNode: PuzzleNode) -> BoxLayoutNode? {
         guard shouldHandle(layerNode) else {
             return nil
         }
@@ -49,7 +49,7 @@ struct LinearBuildPuzzleHandler: BuildPuzzleHandler {
         return layerNode.nodeType == .box ? LinearBox() : LinearGroup()
     }
 
-    func provider(with layerNode: LayerNode) -> PuzzleStateProvider? {
+    func provider(with layerNode: PuzzleNode) -> PuzzleStateProvider? {
         LinearPuzzleStateProvider()
     }
 }

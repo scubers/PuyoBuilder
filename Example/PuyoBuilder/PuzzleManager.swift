@@ -10,7 +10,7 @@ import Puyopuyo
 
 protocol PuzzleTemplate {
     var name: String { get }
-    var initialNode: LayerNode { get }
+    var initialNode: PuzzleNode { get }
     var builderHandler: BuildPuzzleHandler { get }
 }
 

@@ -13,7 +13,7 @@ import Puyopuyo
 class FlowBoxPuzzleTemplate: PuzzleTemplate {
     var name: String { "FlowBox" }
 
-    var initialNode: LayerNode {
+    var initialNode: PuzzleNode {
         .init().config { n in
             n.nodeType = .box
             n.layoutType = .flow
@@ -26,7 +26,7 @@ class FlowBoxPuzzleTemplate: PuzzleTemplate {
 class FlowGroupPuzzleTemplate: PuzzleTemplate {
     var name: String { "FlowGroup" }
 
-    var initialNode: LayerNode {
+    var initialNode: PuzzleNode {
         .init().config { n in
             n.nodeType = .group
             n.layoutType = .flow
@@ -37,18 +37,18 @@ class FlowGroupPuzzleTemplate: PuzzleTemplate {
 }
 
 struct FlowBuildPuzzleHandler: BuildPuzzleHandler {
-    func shouldHandle(_ layerNode: LayerNode) -> Bool {
+    func shouldHandle(_ layerNode: PuzzleNode) -> Bool {
         layerNode.concreteViewType == nil && layerNode.nodeType != .concrete && layerNode.layoutType == .flow
     }
 
-    func create(with layerNode: LayerNode) -> BoxLayoutNode? {
+    func create(with layerNode: PuzzleNode) -> BoxLayoutNode? {
         guard shouldHandle(layerNode) else {
             return nil
         }
         return layerNode.nodeType == .box ? FlowBox() : FlowGroup()
     }
 
-    func provider(with layerNode: LayerNode) -> PuzzleStateProvider? {
+    func provider(with layerNode: PuzzleNode) -> PuzzleStateProvider? {
         guard shouldHandle(layerNode) else {
             return nil
         }
