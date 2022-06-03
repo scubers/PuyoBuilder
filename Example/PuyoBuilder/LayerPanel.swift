@@ -102,7 +102,7 @@ class LayerPanel: ZBox {
             var items = [LayerPanelItem]()
             func deep(node: PuzzleNode, depth: Int) {
                 items.append(.init(depth: depth, node: node))
-                node.children.forEach { child in
+                node.children?.forEach { child in
                     deep(node: child, depth: depth + 1)
                 }
             }

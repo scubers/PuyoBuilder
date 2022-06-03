@@ -7,8 +7,44 @@
 //
 
 import Foundation
-import HandyJSON
+// import HandyJSON
 import Puyopuyo
+
+typealias HandyJSON = Codable
+typealias HandyJSONEnum = Codable
+
+extension Encodable {
+    func encodeToJson(pretty: Bool = false) -> String? {
+        let encoder = JSONEncoder()
+        if pretty {
+            encoder.outputFormatting = .prettyPrinted
+        }
+        if let data = try? encoder.encode(self), let json = String(data: data, encoding: .utf8) {
+            return json
+        }
+        return nil
+    }
+}
+
+extension Decodable {
+    static func from(json: String?) -> Self? {
+        guard let json = json else {
+            return nil
+        }
+
+        guard let data = json.data(using: .utf8) else {
+            return nil
+        }
+
+        return try? JSONDecoder().decode(Self.self, from: data)
+    }
+}
+
+extension Encodable where Self: Decodable {
+    func jsonCopy() -> Self? {
+        return Self.from(json: encodeToJson())
+    }
+}
 
 class PuzzleCanvas: HandyJSON {
     required init() {}
@@ -44,7 +80,7 @@ class PuzzleNode: HandyJSON {
     /// layout or normal view
     var nodeType: NodeType = .box
 
-    var layoutType: LayoutType = .z
+    var layoutType: LayoutType?
 
     var concreteViewType: String?
 
@@ -54,7 +90,14 @@ class PuzzleNode: HandyJSON {
         fatalError()
     }
 
-    var children = [PuzzleNode]()
+    var children: [PuzzleNode]?
+
+    func append(_ child: PuzzleNode) {
+        children?.append(child)
+        if children == nil {
+            children = [child]
+        }
+    }
 
     // MARK: - Base Props
 
@@ -87,7 +130,8 @@ class PuzzleNode: HandyJSON {
 
     // MARK: - Extra
 
-    var extra: [String: Codable]?
+//    var extra: [String: HandyJSON]?
+    var extraJson: String?
 }
 
 extension PuzzleNode {
@@ -98,14 +142,18 @@ extension PuzzleNode {
     }
 
     func copy(_ action: ((PuzzleNode) -> PuzzleNode)?) -> PuzzleNode {
-        let singleCopy = action ?? { PuzzleNode.deserialize(from: $0.toJSON())! }
+        let singleCopy = action ?? { $0.jsonCopy()! }
         let new = singleCopy(self)
-        new.id = id
-        new.layoutType = layoutType
-        new.concreteViewType = concreteViewType
-        new.nodeType = nodeType
-        new.children = children.map(singleCopy)
+        new.children = children?.map { $0.copy(singleCopy) }
         return new
+    }
+
+    func getExtra<T: Decodable>() -> T? {
+        return T.from(json: extraJson)
+    }
+
+    func setExtra<T: Encodable>(_ value: T?) {
+        extraJson = value?.encodeToJson()
     }
 }
 
@@ -195,6 +243,7 @@ class PuzzleAlignment: HandyJSON {
 
     func getAlignment() -> Alignment {
         var rawValue = 0
+        if alignment.contains(.none) { rawValue = rawValue | Alignment.none.rawValue }
         if alignment.contains(.top) { rawValue = rawValue | Alignment.top.rawValue }
         if alignment.contains(.left) { rawValue = rawValue | Alignment.left.rawValue }
         if alignment.contains(.bottom) { rawValue = rawValue | Alignment.bottom.rawValue }
@@ -305,5 +354,3 @@ enum PuzzleVisibility: String, HandyJSONEnum {
         }
     }
 }
-
-extension UIEdgeInsets: HandyJSON {}

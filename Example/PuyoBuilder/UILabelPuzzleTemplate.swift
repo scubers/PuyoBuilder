@@ -52,4 +52,22 @@ class UILabelPuzzleStateProvider: BasePuzzleStateProvider {
     override var states: [IPuzzleState] {
         [text] + super.states
     }
+
+    override func bind(node: PuzzleNode) {
+        super.bind(node: node)
+
+        if let extra: UILabelPuzzleExtra = node.getExtra() {
+            text.state.value = extra.text ?? ""
+        }
+    }
+
+    override func export() -> PuzzleNode {
+        let node = super.export()
+        node.setExtra(UILabelPuzzleExtra(text: text.specificValue))
+        return node
+    }
+}
+
+struct UILabelPuzzleExtra: Codable {
+    var text: String?
 }

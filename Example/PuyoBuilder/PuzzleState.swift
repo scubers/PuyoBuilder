@@ -11,7 +11,7 @@ import Puyopuyo
 
 protocol IPuzzleState {}
 
-class PuzzleState<T>: IPuzzleState {
+class PuzzleState<T>: IPuzzleState, Outputing, Inputing, SpecificValueable {
     init(title: String, value: T) {
         self.title = title
         state.value = value
@@ -19,6 +19,19 @@ class PuzzleState<T>: IPuzzleState {
 
     let title: String
     let state = State<T>.unstable()
+
+    func outputing(_ block: @escaping (T) -> Void) -> Disposer {
+        state.outputing(block)
+    }
+
+    func input(value: T) {
+        state.input(value: value)
+    }
+
+    var specificValue: T {
+        get { state.value }
+        set { state.value = newValue }
+    }
 }
 
 protocol PuzzleStateProvider {
@@ -28,13 +41,13 @@ protocol PuzzleStateProvider {
 }
 
 class BasePuzzleStateProvider: PuzzleStateProvider {
-    let activated = PuzzleState(title: "Activated", value: true)
-    let flowEnding = PuzzleState(title: "FlowEnding", value: false)
-    let margin = PuzzleState(title: "Margin", value: UIEdgeInsets.zero)
-    let alignment = PuzzleState(title: "Alignment", value: Alignment.none)
-    let visibility = PuzzleState(title: "Visibility", value: Visibility.visible)
-    let width = PuzzleState(title: "Width", value: SizeDescription.wrap)
-    let height = PuzzleState(title: "Height", value: SizeDescription.wrap)
+    lazy var activated = PuzzleState(title: "Activated", value: defaultMeasure.activated)
+    lazy var flowEnding = PuzzleState(title: "FlowEnding", value: defaultMeasure.flowEnding)
+    lazy var margin = PuzzleState(title: "Margin", value: defaultMeasure.margin)
+    lazy var alignment = PuzzleState(title: "Alignment", value: defaultMeasure.alignment)
+    lazy var visibility = PuzzleState(title: "Visibility", value: Visibility.visible)
+    lazy var width = PuzzleState(title: "Width", value: defaultMeasure.size.width)
+    lazy var height = PuzzleState(title: "Height", value: defaultMeasure.size.height)
 
     var states: [IPuzzleState] {
         [
@@ -49,18 +62,17 @@ class BasePuzzleStateProvider: PuzzleStateProvider {
     }
 
     func bind(node: PuzzleNode) {
-        activated.state.value = node.activated ?? true
-        flowEnding.state.value = node.flowEnding ?? false
-        margin.state.value = node.margin?.getInsets() ?? .zero
-        alignment.state.value = node.alignment?.getAlignment() ?? .none
-        visibility.state.value = node.visibility?.getVisibility() ?? .visible
-        width.state.value = node.width?.getSizeDescription() ?? .wrap
-        height.state.value = node.height?.getSizeDescription() ?? .wrap
+        if let v = node.activated { activated.state.value = v }
+        if let v = node.flowEnding { flowEnding.state.value = v }
+        if let v = node.margin?.getInsets() { margin.state.value = v }
+        if let v = node.alignment?.getAlignment() { alignment.state.value = v }
+        if let v = node.visibility?.getVisibility() { visibility.state.value = v }
+        if let v = node.width?.getSizeDescription() { width.state.value = v }
+        if let v = node.height?.getSizeDescription() { height.state.value = v }
     }
 
     func export() -> PuzzleNode {
         let node = PuzzleNode()
-        let defaultMeasure = getDefaultMeasure()
         if activated.state.value != defaultMeasure.activated {
             node.activated = activated.state.value
         }
@@ -85,14 +97,16 @@ class BasePuzzleStateProvider: PuzzleStateProvider {
         return node
     }
 
+    lazy var defaultMeasure: Measure = getDefaultMeasure()
+
     func getDefaultMeasure() -> Measure {
         return Measure(delegate: nil, sizeDelegate: nil, childrenDelegate: nil)
     }
 }
 
 class BoxPuzzleStateProvider: BasePuzzleStateProvider {
-    let padding = PuzzleState(title: "Padding", value: UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8))
-    let justifyContent = PuzzleState(title: "JustifyContent", value: Alignment.none)
+    lazy var padding = PuzzleState(title: "Padding", value: (defaultMeasure as! Regulator).padding)
+    lazy var justifyContent = PuzzleState(title: "JustifyContent", value: (defaultMeasure as! Regulator).justifyContent)
     override var states: [IPuzzleState] {
         super.states + [
             padding, justifyContent,
@@ -101,8 +115,8 @@ class BoxPuzzleStateProvider: BasePuzzleStateProvider {
 
     override func bind(node: PuzzleNode) {
         super.bind(node: node)
-        padding.state.value = node.padding?.getInsets() ?? .init(top: 8, left: 8, bottom: 8, right: 8)
-        justifyContent.state.value = node.justifyContent?.getAlignment() ?? .none
+        if let v = node.padding?.getInsets() { padding.state.value = v }
+        if let v = node.justifyContent?.getAlignment() { justifyContent.state.value = v }
     }
 
     override func export() -> PuzzleNode {
@@ -123,21 +137,21 @@ class BoxPuzzleStateProvider: BasePuzzleStateProvider {
 }
 
 class ZPuzzleStateProvider: BoxPuzzleStateProvider {
-    
     override func export() -> PuzzleNode {
         let node = super.export()
         return node
     }
+
     override func getDefaultMeasure() -> Measure {
         return ZRegulator(delegate: nil, sizeDelegate: nil, childrenDelegate: nil)
     }
 }
 
 class LinearPuzzleStateProvider: BoxPuzzleStateProvider {
-    let direction = PuzzleState(title: "Direction", value: Direction.horizontal)
-    let format = PuzzleState(title: "Format", value: Format.leading)
-    let reverse = PuzzleState(title: "Reverse", value: false)
-    let space = PuzzleState(title: "Space", value: CGFloat(0))
+    lazy var direction = PuzzleState(title: "Direction", value: (defaultMeasure as! LinearRegulator).direction)
+    lazy var format = PuzzleState(title: "Format", value: (defaultMeasure as! LinearRegulator).format)
+    lazy var reverse = PuzzleState(title: "Reverse", value: (defaultMeasure as! LinearRegulator).reverse)
+    lazy var space = PuzzleState(title: "Space", value: (defaultMeasure as! LinearRegulator).space)
 
     override var states: [IPuzzleState] {
         super.states + [direction, format, reverse, space]
@@ -145,10 +159,10 @@ class LinearPuzzleStateProvider: BoxPuzzleStateProvider {
 
     override func bind(node: PuzzleNode) {
         super.bind(node: node)
-        direction.state.value = node.direction?.getDirection() ?? .horizontal
-        format.state.value = node.format?.getFormat() ?? .leading
-        reverse.state.value = node.reverse ?? false
-        space.state.value = node.space ?? 0
+        if let v = node.direction?.getDirection() { direction.state.value = v }
+        if let v = node.format?.getFormat() { format.state.value = v }
+        if let v = node.reverse { reverse.state.value = v }
+        if let v = node.space { space.state.value = v }
     }
 
     override func export() -> PuzzleNode {
@@ -178,10 +192,10 @@ class LinearPuzzleStateProvider: BoxPuzzleStateProvider {
 }
 
 class FlowPuzzleStateProvider: LinearPuzzleStateProvider {
-    let runFormat = PuzzleState(title: "RunFormat", value: Format.leading)
-    let arrange = PuzzleState(title: "Arrange", value: 0)
-    let itemSpace = PuzzleState(title: "ItemSpace", value: CGFloat(0))
-    let runSpace = PuzzleState(title: "RunSpace", value: CGFloat(0))
+    lazy var runFormat = PuzzleState(title: "RunFormat", value: (defaultMeasure as! FlowRegulator).runFormat)
+    lazy var arrange = PuzzleState(title: "Arrange", value: (defaultMeasure as! FlowRegulator).arrange)
+    lazy var itemSpace = PuzzleState(title: "ItemSpace", value: (defaultMeasure as! FlowRegulator).itemSpace)
+    lazy var runSpace = PuzzleState(title: "RunSpace", value: (defaultMeasure as! FlowRegulator).runSpace)
 
     override var states: [IPuzzleState] {
         super.states + [arrange, runFormat, itemSpace, runSpace]
@@ -189,10 +203,10 @@ class FlowPuzzleStateProvider: LinearPuzzleStateProvider {
 
     override func bind(node: PuzzleNode) {
         super.bind(node: node)
-        runFormat.state.value = node.runForamt?.getFormat() ?? .leading
-        arrange.state.value = node.arrange ?? 0
-        itemSpace.state.value = node.itemSpace ?? 0
-        runSpace.state.value = node.runSpace ?? 0
+        if let v = node.runForamt?.getFormat() { runFormat.state.value = v }
+        if let v = node.arrange { arrange.state.value = v }
+        if let v = node.itemSpace { itemSpace.state.value = v }
+        if let v = node.runSpace { runSpace.state.value = v }
     }
 
     override func export() -> PuzzleNode {

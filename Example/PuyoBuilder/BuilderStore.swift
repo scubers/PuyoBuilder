@@ -25,6 +25,14 @@ class BuilderStore {
     var handlers: [BuildPuzzleHandler] {
         PuzzleManager.shared.templates.map(\.builderHandler)
     }
+
+    func toggleSelect(_ id: String?) {
+        if id == selected.value {
+            selected.input(value: nil)
+        } else {
+            selected.input(value: id)
+        }
+    }
 }
 
 // MARK: - Structure change
@@ -44,10 +52,10 @@ extension BuilderStore {
             return .init(parent: nil, target: root)
         } else {
             func findChild(for node: PuzzleNode, id: String) -> FindNodeResult? {
-                if let index = node.children.firstIndex(where: { $0.id == id }) {
-                    return .init(parent: node, target: node.children[index])
+                if let children = node.children, let index = children.firstIndex(where: { $0.id == id }) {
+                    return .init(parent: node, target: children[index])
                 } else {
-                    for child in node.children {
+                    for child in node.children ?? [] {
                         if let target = findChild(for: child, id: id) {
                             return target
                         }
@@ -76,7 +84,7 @@ extension BuilderStore {
             return nil
         }
 
-        result.parent?.children.removeAll(where: { $0 === result.target })
+        result.parent?.children?.removeAll(where: { $0 === result.target })
 
         root.resend()
 
@@ -89,7 +97,7 @@ extension BuilderStore {
 
     func appendNode(_ node: PuzzleNode, for id: String) {
         let ret = findNode(by: id)
-        ret?.target.children.append(node)
+        ret?.target.append(node)
         root.resend()
     }
 }
@@ -101,13 +109,20 @@ extension BuilderStore {
         let canvas = PuzzleCanvas()
         canvas.width = canvasSize.value.width
         canvas.height = canvasSize.value.height
-        canvas.root = root.value?.copy { self.getProvider($0.id)?.export() ?? $0 }
-//        canvas.root = root.value
-        return canvas.toJSONString(prettyPrint: prettyPrinted)
+        canvas.root = root.value?.copy { old in
+            let new = self.getProvider(old.id)?.export() ?? old
+            new.id = old.id
+            new.layoutType = old.layoutType
+            new.concreteViewType = old.concreteViewType
+            new.nodeType = old.nodeType
+
+            return new
+        }
+        return canvas.encodeToJson(pretty: prettyPrinted)
     }
 
     func buildWithJson(_ json: String?) {
-        guard let value = PuzzleCanvas.deserialize(from: json) else {
+        guard let value = PuzzleCanvas.from(json: json) else {
             repaceRoot(nil)
             return
         }
@@ -135,13 +150,23 @@ extension BuilderStore {
                     handler.bind(provider: provider, for: nodeResult)
                     providers[node.id] = provider
                 }
+                if let view = nodeResult.layoutNodeView {
+                    let this = WeakableObject(value: self)
+                    view.isUserInteractionEnabled = true
+                    view.py_addTap { [weak node] _ in
+                        this.value?.toggleSelect(node?.id)
+                    }
+                    view.attach()
+                        .borderWidth(2)
+                        .borderColor(selected.map { $0 == node.id ? UIColor.systemPink : .clear })
+                }
                 break
             }
         }
 
         // children
         if let container = result as? BoxLayoutContainer {
-            node.children.forEach { child in
+            node.children?.forEach { child in
                 if let childNode = buildBoxLayoutNode(child) {
                     container.addLayoutNode(childNode)
                 }

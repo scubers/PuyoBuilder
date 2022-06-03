@@ -76,6 +76,7 @@ class InsetsInspector: VBox, Stateful, Eventable {
     func notify<V>(_ value: V, keyPath: WritableKeyPath<ViewState, V>) {
         var state = self.state.value
         state[keyPath: keyPath] = value
+        self.state.input(value: state)
         emit(state.insets)
     }
 }

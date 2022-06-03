@@ -34,6 +34,8 @@ struct UIViewBuildPuzzleHandler: BuildPuzzleHandler {
     }
 
     func provider(with layerNode: PuzzleNode) -> PuzzleStateProvider? {
-        BasePuzzleStateProvider()
+        UIViewPuzzleStateProvider()
     }
 }
+
+class UIViewPuzzleStateProvider: BasePuzzleStateProvider {}
