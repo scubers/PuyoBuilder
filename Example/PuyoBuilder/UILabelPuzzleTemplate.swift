@@ -9,41 +9,25 @@
 import Puyopuyo
 
 class UILabelPuzzleTemplate: PuzzleTemplate {
-    var name: String { "UILabel" }
+    var templateId: String { "template.uilabel" }
 
-    var initialNode: PuzzleNode {
-        .init().config { n in
-            n.nodeType = .concrete
-            n.concreteViewType = "UILabel"
-        }
-    }
+    var name: String { "UILabel" }
 
     var builderHandler: BuildPuzzleHandler { UILabelBuildPuzzleHandler() }
 }
 
 struct UILabelBuildPuzzleHandler: BuildPuzzleHandler {
-    func shouldHandle(_ layerNode: PuzzleNode) -> Bool {
-        layerNode.concreteViewType == "UILabel"
+    func createPuzzle() -> PuzzlePiece {
+        UILabel()
     }
 
-    func create(with layerNode: PuzzleNode) -> BoxLayoutNode? {
-        guard shouldHandle(layerNode) else {
-            return nil
-        }
-
-        return UILabel()
-    }
-
-    func provider(with layerNode: PuzzleNode) -> PuzzleStateProvider? {
+    func createState() -> PuzzleStateProvider {
         UILabelPuzzleStateProvider()
     }
+}
 
-    func bind(provider: PuzzleStateProvider, for node: BoxLayoutNode) {
-        _bind(provider: provider, for: node)
-        if let provider = provider as? UILabelPuzzleStateProvider, let node = node as? UILabel {
-            node.attach().text(provider.text.state)
-        }
-    }
+class UILabelPuzzleStateModel: BasePuzzleStateModel {
+    var text: String?
 }
 
 class UILabelPuzzleStateProvider: BasePuzzleStateProvider {
@@ -53,21 +37,25 @@ class UILabelPuzzleStateProvider: BasePuzzleStateProvider {
         [text] + super.states
     }
 
-    override func bind(node: PuzzleNode) {
-        super.bind(node: node)
-
-        if let extra: UILabelPuzzleExtra = node.getExtra() {
-            text.state.value = extra.text ?? ""
+    override func bindState(to puzzle: PuzzlePiece) {
+        super.bindState(to: puzzle)
+        if let puzzle = puzzle as? UILabel {
+            puzzle.attach()
+                .text(text)
         }
     }
 
-    override func export() -> PuzzleNode {
-        let node = super.export()
-        node.setExtra(UILabelPuzzleExtra(text: text.specificValue))
-        return node
-    }
-}
+    override func resume(_ param: [String: Any]?) {
+        super.resume(param)
 
-struct UILabelPuzzleExtra: Codable {
-    var text: String?
+        if let node = UILabelPuzzleStateModel.from(param) {
+            text.state.value = node.text ?? ""
+        }
+    }
+
+    override func serialize() -> [String: Any]? {
+        let node = UILabelPuzzleStateModel.from(super.serialize()) ?? UILabelPuzzleStateModel()
+        node.text = text.specificValue
+        return node.toDict()
+    }
 }

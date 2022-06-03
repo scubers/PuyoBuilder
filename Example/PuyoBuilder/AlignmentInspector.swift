@@ -27,7 +27,7 @@ class AlignmentInspector: VBox, Stateful, Eventable {
                 .width(.fill)
 
             VFlow(count: 2).attach($0) {
-                for target in [Alignment.top, .bottom, .left, .right, .horzCenter, .vertCenter] {
+                for target in [Alignment.top, .left, .bottom, .right, .vertCenter, .horzCenter] {
                     createButton(title: "\(target)", target: target, selected: binder.alignment.asOutput(), onClick: Inputs {
                         this.value?.notifyToggle($0)
                     }).attach($0)

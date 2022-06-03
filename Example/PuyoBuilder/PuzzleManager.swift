@@ -8,12 +8,6 @@
 
 import Puyopuyo
 
-protocol PuzzleTemplate {
-    var name: String { get }
-    var initialNode: PuzzleNode { get }
-    var builderHandler: BuildPuzzleHandler { get }
-}
-
 class PuzzleManager {
     private init() {}
 

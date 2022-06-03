@@ -7,11 +7,7 @@
 //
 
 import Foundation
-// import HandyJSON
 import Puyopuyo
-
-typealias HandyJSON = Codable
-typealias HandyJSONEnum = Codable
 
 extension Encodable {
     func encodeToJson(pretty: Bool = false) -> String? {
@@ -21,6 +17,13 @@ extension Encodable {
         }
         if let data = try? encoder.encode(self), let json = String(data: data, encoding: .utf8) {
             return json
+        }
+        return nil
+    }
+
+    func toDict() -> [String: Any]? {
+        if let json = encodeToJson(), let data = json.data(using: .utf8), let obj = try? JSONSerialization.jsonObject(with: data) {
+            return obj as? [String: Any]
         }
         return nil
     }
@@ -38,6 +41,14 @@ extension Decodable {
 
         return try? JSONDecoder().decode(Self.self, from: data)
     }
+
+    static func from(_ json: [String: Any]?) -> Self? {
+        guard let json = json, let data = try? JSONSerialization.data(withJSONObject: json, options: .fragmentsAllowed) else {
+            return nil
+        }
+
+        return try? JSONDecoder().decode(Self.self, from: data)
+    }
 }
 
 extension Encodable where Self: Decodable {
@@ -46,7 +57,7 @@ extension Encodable where Self: Decodable {
     }
 }
 
-class PuzzleCanvas: HandyJSON {
+class PuzzleCanvas: Codable {
     required init() {}
 
     var width: CGFloat = 250
@@ -55,16 +66,16 @@ class PuzzleCanvas: HandyJSON {
     var root: PuzzleNode?
 }
 
-class PuzzleNode: HandyJSON {
+class PuzzleNode: Codable {
     required init() {}
 
-    enum NodeType: String, HandyJSONEnum {
+    enum NodeType: String, Codable {
         case concrete
         case box
         case group
     }
 
-    enum LayoutType: String, HandyJSONEnum {
+    enum LayoutType: String, Codable {
         case linear
         case flow
         case z
@@ -130,7 +141,7 @@ class PuzzleNode: HandyJSON {
 
     // MARK: - Extra
 
-//    var extra: [String: HandyJSON]?
+//    var extra: [String: Codable]?
     var extraJson: String?
 }
 
@@ -157,7 +168,7 @@ extension PuzzleNode {
     }
 }
 
-struct PuzzleInsets: HandyJSON {
+struct PuzzleInsets: Codable {
     var top: CGFloat?
     var left: CGFloat?
     var bottom: CGFloat?
@@ -172,10 +183,10 @@ struct PuzzleInsets: HandyJSON {
     }
 }
 
-class PuzzleSizeDesc: HandyJSON {
+class PuzzleSizeDesc: Codable {
     required init() {}
 
-    enum SizeType: String, HandyJSONEnum {
+    enum SizeType: String, Codable {
         case fixed
         case wrap
         case ratio
@@ -232,9 +243,9 @@ class PuzzleSizeDesc: HandyJSON {
     }
 }
 
-class PuzzleAlignment: HandyJSON {
+class PuzzleAlignment: Codable {
     required init() {}
-    enum AlignmentType: String, HandyJSONEnum {
+    enum AlignmentType: String, Codable {
         case none, top, left, bottom, right, horzCenter, vertCenter
     }
 
@@ -269,7 +280,7 @@ class PuzzleAlignment: HandyJSON {
     }
 }
 
-enum PuzzleDirection: String, HandyJSONEnum {
+enum PuzzleDirection: String, Codable {
     case horizontal, vertical
 
     func getDirection() -> Direction {
@@ -291,7 +302,7 @@ enum PuzzleDirection: String, HandyJSONEnum {
     }
 }
 
-enum PuzzleFormat: String, HandyJSONEnum {
+enum PuzzleFormat: String, Codable {
     case leading, center, between, round, trailing
 
     func getFormat() -> Format {
@@ -325,7 +336,7 @@ enum PuzzleFormat: String, HandyJSONEnum {
     }
 }
 
-enum PuzzleVisibility: String, HandyJSONEnum {
+enum PuzzleVisibility: String, Codable {
     case visible, invisible, gone, free
 
     func getVisibility() -> Visibility {

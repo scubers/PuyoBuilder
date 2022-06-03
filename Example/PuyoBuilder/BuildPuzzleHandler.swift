@@ -8,32 +8,29 @@
 
 import Puyopuyo
 
-protocol BuildPuzzleHandler {
-    func shouldHandle(_ layerNode: PuzzleNode) -> Bool
-    func create(with layerNode: PuzzleNode) -> BoxLayoutNode?
-    func provider(with layerNode: PuzzleNode) -> PuzzleStateProvider?
-    func bind(provider: PuzzleStateProvider, for node: BoxLayoutNode)
+protocol PuzzleTemplate {
+    var name: String { get }
+    var templateId: String { get }
+    var builderHandler: BuildPuzzleHandler { get }
 }
 
-extension BuildPuzzleHandler {
-    func _bind(provider: PuzzleStateProvider, for node: BoxLayoutNode) {
-        if let node = node as? (BoxLayoutNode & AutoDisposable) {
-            node.bindBuiltinProvider(provider)
-        }
-    }
-
-    func bind(provider: PuzzleStateProvider, for node: BoxLayoutNode) {
-        _bind(provider: provider, for: node)
-    }
-
-    func createProviderAndBind(with layerNode: PuzzleNode) -> PuzzleStateProvider? {
-        let provider = provider(with: layerNode)
-        provider?.bind(node: layerNode)
-        return provider
-    }
+protocol BuildPuzzleHandler {
+    func createPuzzle() -> PuzzlePiece
+    func createState() -> PuzzleStateProvider
 }
 
 typealias PuzzlePiece = BoxLayoutNode & AutoDisposable
+
+protocol IPuzzleState {}
+
+protocol PuzzleStateProvider {
+    var states: [IPuzzleState] { get }
+
+    func bindState(to puzzle: PuzzlePiece)
+
+    func resume(_ param: [String: Any]?)
+    func serialize() -> [String: Any]?
+}
 
 extension BoxLayoutNode where Self: AutoDisposable {
     func _bind<O: Outputing, V>(_ output: O, action: @escaping (BoxLayoutNode & AutoDisposable, V) -> Void) where O.OutputType == V {
@@ -44,38 +41,11 @@ extension BoxLayoutNode where Self: AutoDisposable {
         }, for: nil)
     }
 
-    func bindBuiltinProvider(_ provider: PuzzleStateProvider) {
-        if let provider = provider as? BasePuzzleStateProvider {
-            attach()
-                .activated(provider.activated.state)
-                .flowEnding(provider.flowEnding.state)
-                .margin(provider.margin.state)
-                .alignment(provider.alignment.state)
-                .width(provider.width.state)
-                .height(provider.height.state)
-                .visibility(provider.visibility.state)
-        }
-
-        if let provider = provider as? BoxPuzzleStateProvider {
-            _bind(provider.padding.state, action: { $0.layoutReg.padding = $1 })
-            _bind(provider.justifyContent.state, action: { $0.layoutReg.justifyContent = $1 })
-        }
-        if let provider = provider as? LinearPuzzleStateProvider {
-            _bind(provider.space.state, action: { $0.layoutLinearReg.space = $1 })
-            _bind(provider.direction.state, action: { $0.layoutLinearReg.direction = $1 })
-            _bind(provider.reverse.state, action: { $0.layoutLinearReg.reverse = $1 })
-            _bind(provider.format.state, action: { $0.layoutLinearReg.format = $1 })
-        }
-        if let provider = provider as? FlowPuzzleStateProvider {
-            _bind(provider.runFormat.state, action: { $0.layoutFlowReg.runFormat = $1 })
-            _bind(provider.itemSpace.state, action: { $0.layoutFlowReg.itemSpace = $1 })
-            _bind(provider.runSpace.state, action: { $0.layoutFlowReg.runSpace = $1 })
-            _bind(provider.arrange.state, action: { $0.layoutFlowReg.arrange = $1 })
-        }
+    func _bind<O: Outputing, V>(_ output: O, keyPath: ReferenceWritableKeyPath<Self, V>) where O.OutputType == V {
+        addDisposer(output.outputing { [weak self] v in
+            if let self = self {
+                self[keyPath: keyPath] = v
+            }
+        }, for: nil)
     }
-
-    private var layoutReg: Regulator { layoutMeasure as! Regulator }
-    private var layoutZReg: ZRegulator { layoutMeasure as! ZRegulator }
-    private var layoutLinearReg: LinearRegulator { layoutMeasure as! LinearRegulator }
-    private var layoutFlowReg: FlowRegulator { layoutMeasure as! FlowRegulator }
 }

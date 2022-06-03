@@ -9,9 +9,7 @@
 import Foundation
 import Puyopuyo
 
-protocol IPuzzleState {}
-
-class PuzzleState<T>: IPuzzleState, Outputing, Inputing, SpecificValueable {
+final class PuzzleState<T>: IPuzzleState, Outputing, Inputing, SpecificValueable {
     init(title: String, value: T) {
         self.title = title
         state.value = value
@@ -34,10 +32,14 @@ class PuzzleState<T>: IPuzzleState, Outputing, Inputing, SpecificValueable {
     }
 }
 
-protocol PuzzleStateProvider {
-    var states: [IPuzzleState] { get }
-    func bind(node: PuzzleNode)
-    func export() -> PuzzleNode
+class BasePuzzleStateModel: Codable {
+    var activated: Bool?
+    var flowEnding: Bool?
+    var margin: UIEdgeInsets?
+    var alignment: PuzzleAlignment?
+    var visibility: PuzzleVisibility?
+    var width: PuzzleSizeDesc?
+    var height: PuzzleSizeDesc?
 }
 
 class BasePuzzleStateProvider: PuzzleStateProvider {
@@ -61,18 +63,30 @@ class BasePuzzleStateProvider: PuzzleStateProvider {
         ]
     }
 
-    func bind(node: PuzzleNode) {
-        if let v = node.activated { activated.state.value = v }
-        if let v = node.flowEnding { flowEnding.state.value = v }
-        if let v = node.margin?.getInsets() { margin.state.value = v }
-        if let v = node.alignment?.getAlignment() { alignment.state.value = v }
-        if let v = node.visibility?.getVisibility() { visibility.state.value = v }
-        if let v = node.width?.getSizeDescription() { width.state.value = v }
-        if let v = node.height?.getSizeDescription() { height.state.value = v }
+    func bindState(to puzzle: PuzzlePiece) {
+        puzzle._bind(activated, action: { $0.layoutMeasure.activated = $1 })
+        puzzle._bind(flowEnding, action: { $0.layoutMeasure.flowEnding = $1 })
+        puzzle._bind(margin, action: { $0.layoutMeasure.margin = $1 })
+        puzzle._bind(alignment, action: { $0.layoutMeasure.alignment = $1 })
+        puzzle._bind(visibility, action: { $0.layoutVisibility = $1 })
+        puzzle._bind(width, action: { $0.layoutMeasure.size.width = $1 })
+        puzzle._bind(height, action: { $0.layoutMeasure.size.height = $1 })
     }
 
-    func export() -> PuzzleNode {
-        let node = PuzzleNode()
+    func resume(_ param: [String: Any]?) {
+        if let node = BasePuzzleStateModel.from(param) {
+            if let v = node.activated { activated.state.value = v }
+            if let v = node.flowEnding { flowEnding.state.value = v }
+            if let v = node.margin { margin.state.value = v }
+            if let v = node.alignment?.getAlignment() { alignment.state.value = v }
+            if let v = node.visibility?.getVisibility() { visibility.state.value = v }
+            if let v = node.width?.getSizeDescription() { width.state.value = v }
+            if let v = node.height?.getSizeDescription() { height.state.value = v }
+        }
+    }
+
+    func serialize() -> [String: Any]? {
+        let node = BasePuzzleStateModel()
         if activated.state.value != defaultMeasure.activated {
             node.activated = activated.state.value
         }
@@ -80,7 +94,7 @@ class BasePuzzleStateProvider: PuzzleStateProvider {
             node.flowEnding = flowEnding.state.value
         }
         if margin.state.value != defaultMeasure.margin {
-            node.margin = PuzzleInsets.from(margin.state.value)
+            node.margin = margin.state.value
         }
         if alignment.state.value != defaultMeasure.alignment {
             node.alignment = PuzzleAlignment.from(alignment.state.value)
@@ -94,7 +108,7 @@ class BasePuzzleStateProvider: PuzzleStateProvider {
         if height.state.value != defaultMeasure.size.height {
             node.height = PuzzleSizeDesc.from(height.state.value)
         }
-        return node
+        return node.toDict()
     }
 
     lazy var defaultMeasure: Measure = getDefaultMeasure()
@@ -102,6 +116,11 @@ class BasePuzzleStateProvider: PuzzleStateProvider {
     func getDefaultMeasure() -> Measure {
         return Measure(delegate: nil, sizeDelegate: nil, childrenDelegate: nil)
     }
+}
+
+class BoxPuzzleStateModel: BasePuzzleStateModel {
+    var padding: UIEdgeInsets?
+    var justifyContent: PuzzleAlignment?
 }
 
 class BoxPuzzleStateProvider: BasePuzzleStateProvider {
@@ -113,22 +132,30 @@ class BoxPuzzleStateProvider: BasePuzzleStateProvider {
         ]
     }
 
-    override func bind(node: PuzzleNode) {
-        super.bind(node: node)
-        if let v = node.padding?.getInsets() { padding.state.value = v }
-        if let v = node.justifyContent?.getAlignment() { justifyContent.state.value = v }
+    override func bindState(to puzzle: PuzzlePiece) {
+        super.bindState(to: puzzle)
+        puzzle._bind(padding, action: { $0.getReg()?.padding = $1 })
+        puzzle._bind(justifyContent, action: { $0.getReg()?.justifyContent = $1 })
     }
 
-    override func export() -> PuzzleNode {
-        let node = super.export()
+    override func resume(_ param: [String: Any]?) {
+        super.resume(param)
+        if let node = BoxPuzzleStateModel.from(param) {
+            if let v = node.padding { padding.state.value = v }
+            if let v = node.justifyContent?.getAlignment() { justifyContent.state.value = v }
+        }
+    }
+
+    override func serialize() -> [String: Any]? {
+        let node = BoxPuzzleStateModel.from(super.serialize()) ?? BoxPuzzleStateModel()
         let defaultMeasure = getDefaultMeasure() as! Regulator
         if padding.state.value != defaultMeasure.padding {
-            node.padding = PuzzleInsets.from(padding.state.value)
+            node.padding = padding.state.value
         }
         if justifyContent.state.value != defaultMeasure.justifyContent {
             node.justifyContent = PuzzleAlignment.from(justifyContent.state.value)
         }
-        return node
+        return node.toDict()
     }
 
     override func getDefaultMeasure() -> Measure {
@@ -136,100 +163,13 @@ class BoxPuzzleStateProvider: BasePuzzleStateProvider {
     }
 }
 
-class ZPuzzleStateProvider: BoxPuzzleStateProvider {
-    override func export() -> PuzzleNode {
-        let node = super.export()
-        return node
+extension BoxLayoutNode {
+    private func asMeasureType<T>() -> T? {
+        return layoutMeasure as? T
     }
 
-    override func getDefaultMeasure() -> Measure {
-        return ZRegulator(delegate: nil, sizeDelegate: nil, childrenDelegate: nil)
-    }
-}
-
-class LinearPuzzleStateProvider: BoxPuzzleStateProvider {
-    lazy var direction = PuzzleState(title: "Direction", value: (defaultMeasure as! LinearRegulator).direction)
-    lazy var format = PuzzleState(title: "Format", value: (defaultMeasure as! LinearRegulator).format)
-    lazy var reverse = PuzzleState(title: "Reverse", value: (defaultMeasure as! LinearRegulator).reverse)
-    lazy var space = PuzzleState(title: "Space", value: (defaultMeasure as! LinearRegulator).space)
-
-    override var states: [IPuzzleState] {
-        super.states + [direction, format, reverse, space]
-    }
-
-    override func bind(node: PuzzleNode) {
-        super.bind(node: node)
-        if let v = node.direction?.getDirection() { direction.state.value = v }
-        if let v = node.format?.getFormat() { format.state.value = v }
-        if let v = node.reverse { reverse.state.value = v }
-        if let v = node.space { space.state.value = v }
-    }
-
-    override func export() -> PuzzleNode {
-        let node = super.export()
-        let defaultMeasure = getDefaultMeasure() as! LinearRegulator
-
-        if direction.state.value != defaultMeasure.direction {
-            node.direction = PuzzleDirection.from(direction.state.value)
-        }
-
-        if format.state.value != defaultMeasure.format {
-            node.format = PuzzleFormat.from(format.state.value)
-        }
-        if reverse.state.value != defaultMeasure.reverse {
-            node.reverse = reverse.state.value
-        }
-        if space.state.value != defaultMeasure.space {
-            node.space = space.state.value
-        }
-
-        return node
-    }
-
-    override func getDefaultMeasure() -> Measure {
-        return LinearRegulator(delegate: nil, sizeDelegate: nil, childrenDelegate: nil)
-    }
-}
-
-class FlowPuzzleStateProvider: LinearPuzzleStateProvider {
-    lazy var runFormat = PuzzleState(title: "RunFormat", value: (defaultMeasure as! FlowRegulator).runFormat)
-    lazy var arrange = PuzzleState(title: "Arrange", value: (defaultMeasure as! FlowRegulator).arrange)
-    lazy var itemSpace = PuzzleState(title: "ItemSpace", value: (defaultMeasure as! FlowRegulator).itemSpace)
-    lazy var runSpace = PuzzleState(title: "RunSpace", value: (defaultMeasure as! FlowRegulator).runSpace)
-
-    override var states: [IPuzzleState] {
-        super.states + [arrange, runFormat, itemSpace, runSpace]
-    }
-
-    override func bind(node: PuzzleNode) {
-        super.bind(node: node)
-        if let v = node.runForamt?.getFormat() { runFormat.state.value = v }
-        if let v = node.arrange { arrange.state.value = v }
-        if let v = node.itemSpace { itemSpace.state.value = v }
-        if let v = node.runSpace { runSpace.state.value = v }
-    }
-
-    override func export() -> PuzzleNode {
-        let node = super.export()
-        let defaultMeasure = getDefaultMeasure() as! FlowRegulator
-
-        if runFormat.state.value != defaultMeasure.runFormat {
-            node.runForamt = PuzzleFormat.from(runFormat.state.value)
-        }
-        if arrange.state.value != defaultMeasure.arrange {
-            node.arrange = arrange.state.value
-        }
-        if itemSpace.state.value != defaultMeasure.itemSpace {
-            node.itemSpace = itemSpace.state.value
-        }
-        if runSpace.state.value != defaultMeasure.runSpace {
-            node.runSpace = runSpace.state.value
-        }
-
-        return node
-    }
-
-    override func getDefaultMeasure() -> Measure {
-        return FlowRegulator(delegate: nil, sizeDelegate: nil, childrenDelegate: nil)
-    }
+    func getReg() -> Regulator? { asMeasureType() }
+    func getZReg() -> ZRegulator? { asMeasureType() }
+    func getFlowReg() -> FlowRegulator? { asMeasureType() }
+    func getLinearReg() -> LinearRegulator? { asMeasureType() }
 }

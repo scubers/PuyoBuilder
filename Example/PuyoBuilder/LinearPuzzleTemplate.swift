@@ -11,46 +11,90 @@ import Foundation
 import Puyopuyo
 
 class LinearBoxPuzzleTemplate: PuzzleTemplate {
+    var templateId: String { "template.linearBox" }
+
     var name: String { "LinearBox" }
 
-    var initialNode: PuzzleNode {
-        .init().config { n in
-            n.nodeType = .box
-            n.layoutType = .linear
-            n.padding = .init(top: 8, left: 8, bottom: 8, right: 8)
-        }
-    }
-
-    var builderHandler: BuildPuzzleHandler { LinearBuildPuzzleHandler() }
+    var builderHandler: BuildPuzzleHandler { LinearBuildPuzzleHandler(isGroup: false) }
 }
 
 class LinearGroupPuzzleTemplate: PuzzleTemplate {
+    var templateId: String { "template.linearGroup" }
+
     var name: String { "LinearGroup" }
 
-    var initialNode: PuzzleNode {
-        .init().config { n in
-            n.nodeType = .group
-            n.layoutType = .linear
-        }
-    }
-
-    var builderHandler: BuildPuzzleHandler { LinearBuildPuzzleHandler() }
+    var builderHandler: BuildPuzzleHandler { LinearBuildPuzzleHandler(isGroup: true) }
 }
 
 struct LinearBuildPuzzleHandler: BuildPuzzleHandler {
-    func shouldHandle(_ layerNode: PuzzleNode) -> Bool {
-        layerNode.concreteViewType == nil && layerNode.nodeType != .concrete && layerNode.layoutType == .linear
+    let isGroup: Bool
+
+    func createPuzzle() -> PuzzlePiece {
+        isGroup ? LinearGroup() : LinearBox()
     }
 
-    func create(with layerNode: PuzzleNode) -> BoxLayoutNode? {
-        guard shouldHandle(layerNode) else {
-            return nil
+    func createState() -> PuzzleStateProvider {
+        LinearPuzzleStateProvider()
+    }
+}
+
+class LinearPuzzleStateModel: BoxPuzzleStateModel {
+    var direction: PuzzleDirection?
+    var format: PuzzleFormat?
+    var reverse: Bool?
+    var space: CGFloat?
+}
+
+class LinearPuzzleStateProvider: BoxPuzzleStateProvider {
+    lazy var direction = PuzzleState(title: "Direction", value: (defaultMeasure as! LinearRegulator).direction)
+    lazy var format = PuzzleState(title: "Format", value: (defaultMeasure as! LinearRegulator).format)
+    lazy var reverse = PuzzleState(title: "Reverse", value: (defaultMeasure as! LinearRegulator).reverse)
+    lazy var space = PuzzleState(title: "Space", value: (defaultMeasure as! LinearRegulator).space)
+
+    override var states: [IPuzzleState] {
+        super.states + [direction, format, reverse, space]
+    }
+
+    override func bindState(to puzzle: PuzzlePiece) {
+        super.bindState(to: puzzle)
+        puzzle._bind(direction, action: { $0.getLinearReg()?.direction = $1 })
+        puzzle._bind(format, action: { $0.getLinearReg()?.format = $1 })
+        puzzle._bind(reverse, action: { $0.getLinearReg()?.reverse = $1 })
+        puzzle._bind(space, action: { $0.getLinearReg()?.space = $1 })
+    }
+
+    override func resume(_ param: [String: Any]?) {
+        super.resume(param)
+        if let node = LinearPuzzleStateModel.from(param) {
+            if let v = node.direction?.getDirection() { direction.state.value = v }
+            if let v = node.format?.getFormat() { format.state.value = v }
+            if let v = node.reverse { reverse.state.value = v }
+            if let v = node.space { space.state.value = v }
+        }
+    }
+
+    override func serialize() -> [String: Any]? {
+        let node = LinearPuzzleStateModel.from(super.serialize()) ?? LinearPuzzleStateModel()
+        let defaultMeasure = getDefaultMeasure() as! LinearRegulator
+
+        if direction.state.value != defaultMeasure.direction {
+            node.direction = PuzzleDirection.from(direction.state.value)
         }
 
-        return layerNode.nodeType == .box ? LinearBox() : LinearGroup()
+        if format.state.value != defaultMeasure.format {
+            node.format = PuzzleFormat.from(format.state.value)
+        }
+        if reverse.state.value != defaultMeasure.reverse {
+            node.reverse = reverse.state.value
+        }
+        if space.state.value != defaultMeasure.space {
+            node.space = space.state.value
+        }
+
+        return node.toDict()
     }
 
-    func provider(with layerNode: PuzzleNode) -> PuzzleStateProvider? {
-        LinearPuzzleStateProvider()
+    override func getDefaultMeasure() -> Measure {
+        return LinearRegulator(delegate: nil, sizeDelegate: nil, childrenDelegate: nil)
     }
 }

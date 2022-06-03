@@ -9,17 +9,12 @@
 import Puyopuyo
 import UIKit
 
-struct InitNodeModel {
-    var title: String
-    var layerNode: PuzzleNode
-}
-
 class NodeSelectVC: UIViewController {
     private let isRoot: Bool
 
-    private let onResult: (PuzzleNode) -> Void
+    private let onResult: (PuzzleTemplate) -> Void
 
-    init(isRoot: Bool, onResult: @escaping (PuzzleNode) -> Void = { _ in }) {
+    init(isRoot: Bool, onResult: @escaping (PuzzleTemplate) -> Void = { _ in }) {
         self.isRoot = isRoot
         self.onResult = onResult
         super.init(nibName: nil, bundle: nil)
@@ -30,20 +25,10 @@ class NodeSelectVC: UIViewController {
         fatalError()
     }
 
-    let state = State([InitNodeModel]())
+    let state = State(PuzzleManager.shared.templates)
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        let list = PuzzleManager.shared.templates
-            .map { template in
-                InitNodeModel(title: template.name, layerNode: template.initialNode)
-            }
-            .filter { model in
-                !isRoot || model.layerNode.nodeType == .box
-            }
-
-        state.value = list
 
         let this = WeakableObject(value: self)
 
@@ -57,7 +42,7 @@ class NodeSelectVC: UIViewController {
                             ZBox().attach {
                                 UILabel().attach($0)
                                     .fontSize(20, weight: .bold)
-                                    .text(o.data.title)
+                                    .text(o.data.name)
                             }
                             .backgroundColor(.secondarySystemGroupedBackground)
                             .justifyContent(.center)
@@ -68,7 +53,7 @@ class NodeSelectVC: UIViewController {
                             let result = this.value?.onResult
 
                             this.value?.dismiss(animated: true, completion: {
-                                result?(info.data.layerNode)
+                                result?(info.data)
                             })
                         }
                     ),

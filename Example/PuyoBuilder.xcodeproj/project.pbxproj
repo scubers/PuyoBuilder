@@ -40,6 +40,7 @@
 		09795637284367B000E4BB56 /* InspectorViewFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09795636284367B000E4BB56 /* InspectorViewFactory.swift */; };
 		0979563A284382ED00E4BB56 /* PuzzleManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09795639284382ED00E4BB56 /* PuzzleManager.swift */; };
 		09954F6C2847C75B005B402A /* JsonViewVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09954F6B2847C75B005B402A /* JsonViewVC.swift */; };
+		09954F70284A7328005B402A /* BuilderPuzzleItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09954F6F284A7328005B402A /* BuilderPuzzleItem.swift */; };
 		28211C85A23069A1DD202176 /* Pods_PuyoBuilder_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04A1C3D714D6E8756DD08471 /* Pods_PuyoBuilder_Example.framework */; };
 		28EA1FB33035E0FAAA1AEF6D /* Pods_PuyoBuilder_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C14E97FE272F2E9C82E46408 /* Pods_PuyoBuilder_Tests.framework */; };
 		607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD51AFB9204008FA782 /* AppDelegate.swift */; };
@@ -97,6 +98,7 @@
 		09795636284367B000E4BB56 /* InspectorViewFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectorViewFactory.swift; sourceTree = "<group>"; };
 		09795639284382ED00E4BB56 /* PuzzleManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PuzzleManager.swift; sourceTree = "<group>"; };
 		09954F6B2847C75B005B402A /* JsonViewVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JsonViewVC.swift; sourceTree = "<group>"; };
+		09954F6F284A7328005B402A /* BuilderPuzzleItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuilderPuzzleItem.swift; sourceTree = "<group>"; };
 		263A03F08B4D1DD062C03527 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		5B0B1B1109CA217CF1EBDB36 /* PuyoBuilder.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = PuyoBuilder.podspec; path = ../PuyoBuilder.podspec; sourceTree = "<group>"; };
 		607FACD01AFB9204008FA782 /* PuyoBuilder_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PuyoBuilder_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -176,6 +178,7 @@
 			isa = PBXGroup;
 			children = (
 				096A9FB12839F8CA00C6283E /* BuilderStore.swift */,
+				09954F6F284A7328005B402A /* BuilderPuzzleItem.swift */,
 			);
 			name = Store;
 			sourceTree = "<group>";
@@ -568,6 +571,7 @@
 				096A9FC7283A991700C6283E /* PropsInputView.swift in Sources */,
 				096A9FB22839F8CA00C6283E /* BuilderStore.swift in Sources */,
 				096A9FCD283AAB4500C6283E /* AlignmentInspector.swift in Sources */,
+				09954F70284A7328005B402A /* BuilderPuzzleItem.swift in Sources */,
 				0956C5B72843837A001A7F8F /* BuildPuzzleHandler.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -11,6 +11,8 @@ import Foundation
 import Puyopuyo
 
 class ZBoxPuzzleTemplate: PuzzleTemplate {
+    var templateId: String { "template.zbox" }
+
     var name: String { "ZBox" }
 
     var initialNode: PuzzleNode {
@@ -21,10 +23,11 @@ class ZBoxPuzzleTemplate: PuzzleTemplate {
         }
     }
 
-    var builderHandler: BuildPuzzleHandler { ZBuildPuzzleHandler() }
+    var builderHandler: BuildPuzzleHandler { ZBuildPuzzleHandler(isGroup: false) }
 }
 
 class ZGroupPuzzleTemplate: PuzzleTemplate {
+    var templateId: String { "template.zgroup" }
     var name: String { "ZGroup" }
 
     var initialNode: PuzzleNode {
@@ -34,22 +37,23 @@ class ZGroupPuzzleTemplate: PuzzleTemplate {
         }
     }
 
-    var builderHandler: BuildPuzzleHandler { ZBuildPuzzleHandler() }
+    var builderHandler: BuildPuzzleHandler { ZBuildPuzzleHandler(isGroup: true) }
 }
 
 struct ZBuildPuzzleHandler: BuildPuzzleHandler {
-    func shouldHandle(_ layerNode: PuzzleNode) -> Bool {
-        layerNode.concreteViewType == nil && layerNode.nodeType != .concrete && layerNode.layoutType == .z
+    let isGroup: Bool
+
+    func createPuzzle() -> PuzzlePiece {
+        isGroup ? ZGroup() : ZBox()
     }
 
-    func create(with layerNode: PuzzleNode) -> BoxLayoutNode? {
-        guard shouldHandle(layerNode) else {
-            return nil
-        }
-        return layerNode.nodeType == .box ? ZBox() : ZGroup()
-    }
-
-    func provider(with layerNode: PuzzleNode) -> PuzzleStateProvider? {
+    func createState() -> PuzzleStateProvider {
         ZPuzzleStateProvider()
+    }
+}
+
+class ZPuzzleStateProvider: BoxPuzzleStateProvider {
+    override func getDefaultMeasure() -> Measure {
+        return ZRegulator(delegate: nil, sizeDelegate: nil, childrenDelegate: nil)
     }
 }

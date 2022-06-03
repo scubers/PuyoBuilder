@@ -11,48 +11,87 @@ import Foundation
 import Puyopuyo
 
 class FlowBoxPuzzleTemplate: PuzzleTemplate {
+    var templateId: String { "template.flowBox" }
     var name: String { "FlowBox" }
 
-    var initialNode: PuzzleNode {
-        .init().config { n in
-            n.nodeType = .box
-            n.layoutType = .flow
-            n.padding = .init(top: 8, left: 8, bottom: 8, right: 8)
-        }
-    }
-
-    var builderHandler: BuildPuzzleHandler { FlowBuildPuzzleHandler() }
+    var builderHandler: BuildPuzzleHandler { FlowBuildPuzzleHandler(isGroup: false) }
 }
 
 class FlowGroupPuzzleTemplate: PuzzleTemplate {
+    var templateId: String { "template.flowGroup" }
     var name: String { "FlowGroup" }
 
-    var initialNode: PuzzleNode {
-        .init().config { n in
-            n.nodeType = .group
-            n.layoutType = .flow
-        }
-    }
-
-    var builderHandler: BuildPuzzleHandler { FlowBuildPuzzleHandler() }
+    var builderHandler: BuildPuzzleHandler { FlowBuildPuzzleHandler(isGroup: true) }
 }
 
 struct FlowBuildPuzzleHandler: BuildPuzzleHandler {
-    func shouldHandle(_ layerNode: PuzzleNode) -> Bool {
-        layerNode.concreteViewType == nil && layerNode.nodeType != .concrete && layerNode.layoutType == .flow
+    let isGroup: Bool
+
+    func createPuzzle() -> PuzzlePiece {
+        isGroup ? FlowGroup() : FlowBox()
     }
 
-    func create(with layerNode: PuzzleNode) -> BoxLayoutNode? {
-        guard shouldHandle(layerNode) else {
-            return nil
-        }
-        return layerNode.nodeType == .box ? FlowBox() : FlowGroup()
+    func createState() -> PuzzleStateProvider {
+        FlowPuzzleStateProvider()
+    }
+}
+
+class FlowPuzzleStateModel: LinearPuzzleStateModel {
+    var runFormat: PuzzleFormat?
+    var arrange: Int?
+    var itemSpace: CGFloat?
+    var runSpace: CGFloat?
+}
+
+class FlowPuzzleStateProvider: LinearPuzzleStateProvider {
+    lazy var runFormat = PuzzleState(title: "RunFormat", value: (defaultMeasure as! FlowRegulator).runFormat)
+    lazy var arrange = PuzzleState(title: "Arrange", value: (defaultMeasure as! FlowRegulator).arrange)
+    lazy var itemSpace = PuzzleState(title: "ItemSpace", value: (defaultMeasure as! FlowRegulator).itemSpace)
+    lazy var runSpace = PuzzleState(title: "RunSpace", value: (defaultMeasure as! FlowRegulator).runSpace)
+
+    override var states: [IPuzzleState] {
+        super.states + [arrange, runFormat, itemSpace, runSpace]
     }
 
-    func provider(with layerNode: PuzzleNode) -> PuzzleStateProvider? {
-        guard shouldHandle(layerNode) else {
-            return nil
+    override func bindState(to puzzle: PuzzlePiece) {
+        super.bindState(to: puzzle)
+        puzzle._bind(runFormat, action: { $0.getFlowReg()?.runFormat = $1 })
+        puzzle._bind(arrange, action: { $0.getFlowReg()?.arrange = $1 })
+        puzzle._bind(itemSpace, action: { $0.getFlowReg()?.itemSpace = $1 })
+        puzzle._bind(runSpace, action: { $0.getFlowReg()?.runSpace = $1 })
+    }
+
+    override func resume(_ param: [String: Any]?) {
+        super.resume(param)
+        if let node = FlowPuzzleStateModel.from(param) {
+            if let v = node.runFormat?.getFormat() { runFormat.state.value = v }
+            if let v = node.arrange { arrange.state.value = v }
+            if let v = node.itemSpace { itemSpace.state.value = v }
+            if let v = node.runSpace { runSpace.state.value = v }
         }
-        return FlowPuzzleStateProvider()
+    }
+
+    override func serialize() -> [String: Any]? {
+        let node = FlowPuzzleStateModel.from(super.serialize()) ?? FlowPuzzleStateModel()
+        let defaultMeasure = getDefaultMeasure() as! FlowRegulator
+
+        if runFormat.state.value != defaultMeasure.runFormat {
+            node.runFormat = PuzzleFormat.from(runFormat.state.value)
+        }
+        if arrange.state.value != defaultMeasure.arrange {
+            node.arrange = arrange.state.value
+        }
+        if itemSpace.state.value != defaultMeasure.itemSpace {
+            node.itemSpace = itemSpace.state.value
+        }
+        if runSpace.state.value != defaultMeasure.runSpace {
+            node.runSpace = runSpace.state.value
+        }
+
+        return node.toDict()
+    }
+
+    override func getDefaultMeasure() -> Measure {
+        return FlowRegulator(delegate: nil, sizeDelegate: nil, childrenDelegate: nil)
     }
 }

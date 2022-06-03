@@ -33,13 +33,7 @@ class LayerPanel: ZBox {
                     ListRecycleSection(items: items.asOutput(), cell: { o, i in
                         HBox().attach {
                             UILabel().attach($0)
-                                .text(o.data.node.map { node -> String in
-                                    if node.nodeType == .concrete {
-                                        return node.concreteViewType ?? "ConcreteView"
-                                    } else {
-                                        return "\(node.layoutType)"
-                                    }
-                                })
+                                .text(o.data.node.title)
                                 .width(.fill)
 
                             UIButton(type: .contactAdd).attach($0)
@@ -48,7 +42,7 @@ class LayerPanel: ZBox {
                                         this.value?.addChild(for: info.data.node.id)
                                     }
                                 })
-                                .visibility(o.data.node.nodeType.map { ($0 != .concrete).py_visibleOrGone() })
+//                                .visibility(o.data.node.nodeType.map { ($0 != .concrete).py_visibleOrGone() })
 
                             UIButton().attach($0)
                                 .image(UIImage(systemName: "trash"))
@@ -100,9 +94,9 @@ class LayerPanel: ZBox {
                 return []
             }
             var items = [LayerPanelItem]()
-            func deep(node: PuzzleNode, depth: Int) {
+            func deep(node: BuilderPuzzleItem, depth: Int) {
                 items.append(.init(depth: depth, node: node))
-                node.children?.forEach { child in
+                node.children.forEach { child in
                     deep(node: child, depth: depth + 1)
                 }
             }
@@ -113,14 +107,14 @@ class LayerPanel: ZBox {
 
     func chooseRootBox() {
         let vc = NodeSelectVC(isRoot: true) {
-            self.store.repaceRoot($0)
+            self.store.repaceRoot(BuilderPuzzleItem(template: $0))
         }
         findTopViewController(for: self)?.present(vc, animated: true)
     }
 
     func addChild(for id: String) {
         let vc = NodeSelectVC(isRoot: false) {
-            self.store.appendNode($0, for: id)
+            self.store.appendNode(BuilderPuzzleItem(template: $0), for: id)
         }
         findTopViewController(for: self)?.present(vc, animated: true)
     }
@@ -132,5 +126,5 @@ class LayerPanel: ZBox {
 
 struct LayerPanelItem {
     var depth: Int
-    var node: PuzzleNode
+    var node: BuilderPuzzleItem
 }
