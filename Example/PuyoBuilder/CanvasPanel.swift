@@ -67,7 +67,7 @@ class CanvasPanel: ZBox {
                     })
                     .width(.fill)
 
-                HGroup().attach($0) {
+                VFlow().attach($0) {
                     SelectorButton().attach($0)
                         .state(.init(selected: false, title: "Export"))
                         .onTap(to: self) { this, _ in
@@ -80,6 +80,14 @@ class CanvasPanel: ZBox {
                         .state(.init(selected: false, title: "Import"))
                         .onTap(to: self) { this, _ in
                             findTopViewController(for: this)?.present(JsonViewVC(store: this.store, json: ""), animated: true)
+                        }
+
+                    SelectorButton().attach($0)
+                        .state(.init(selected: false, title: "Code"))
+                        .onTap(to: self) { this, _ in
+                            let json = this.store.exportCode()
+                            print(this.store.exportJson(prettyPrinted: false) ?? "")
+                            findTopViewController(for: this)?.present(JsonViewVC(store: this.store, json: json), animated: true)
                         }
                 }
                 .width(.fill)

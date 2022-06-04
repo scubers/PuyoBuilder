@@ -41,6 +41,10 @@ struct ZBuildPuzzleHandler: BuildPuzzleHandler {
         provider.padding.specificValue = .init(top: 8, left: 8, bottom: 8, right: 8)
         return provider
     }
+
+    func initializeCode() -> String {
+        isGroup ? "ZGroup()" : "ZBox()"
+    }
 }
 
 class ZPuzzleStateProvider: BoxPuzzleStateProvider {

@@ -65,6 +65,20 @@ class BasePuzzleStateProvider: PuzzleStateProvider {
         ]
     }
 
+    func generateCode() -> [String] {
+        var codes = [String]()
+        if let model = BasePuzzleStateModel.deserialize(from: serialize()) {
+            if let v = model.activated { codes.append(".activated(\(v))") }
+            if let v = model.flowEnding { codes.append(".flowEnding(\(v))") }
+            if let v = model.visibility { codes.append(".visibility(\(v))") }
+            if let v = model.margin { codes.append(".margin(top: \(v.top ?? 0), left: \(v.left ?? 0), bottom: \(v.bottom ?? 0), right: \(v.right ?? 0))") }
+            if let v = model.alignment?.getAlignment() { codes.append(".alignment(\(v.genCode()))") }
+            if let v = model.width?.getSizeDescription() { codes.append(".width(\(v.genCode()))") }
+            if let v = model.height?.getSizeDescription() { codes.append(".height(\(v.genCode()))") }
+        }
+        return codes
+    }
+
     func bindState(to puzzle: PuzzlePiece) {
         puzzle._bind(activated, action: { $0.layoutMeasure.activated = $1 })
         puzzle._bind(flowEnding, action: { $0.layoutMeasure.flowEnding = $1 })
@@ -132,6 +146,15 @@ class BoxPuzzleStateProvider: BasePuzzleStateProvider {
         super.states + [
             padding, justifyContent,
         ]
+    }
+
+    override func generateCode() -> [String] {
+        var codes = super.generateCode()
+        if let model = BoxPuzzleStateModel.deserialize(from: serialize()) {
+            if let v = model.padding { codes.append(".padding(top: \(v.top ?? 0), left: \(v.left ?? 0), bottom: \(v.bottom ?? 0), right: \(v.right ?? 0))") }
+            if let v = model.justifyContent?.getAlignment() { codes.append(".justifyContent(\(v.genCode()))") }
+        }
+        return codes
     }
 
     override func bindState(to puzzle: PuzzlePiece) {

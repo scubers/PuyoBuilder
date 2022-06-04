@@ -14,7 +14,7 @@ class LinearBoxPuzzleTemplate: PuzzleTemplate {
     var templateId: String { "template.linearBox" }
 
     var name: String { "LinearBox" }
-    
+
     var containerType: PuzzleContainerType { .box }
 
     var builderHandler: BuildPuzzleHandler { LinearBuildPuzzleHandler(isGroup: false) }
@@ -24,7 +24,7 @@ class LinearGroupPuzzleTemplate: PuzzleTemplate {
     var templateId: String { "template.linearGroup" }
 
     var name: String { "LinearGroup" }
-    
+
     var containerType: PuzzleContainerType { .group }
 
     var builderHandler: BuildPuzzleHandler { LinearBuildPuzzleHandler(isGroup: true) }
@@ -41,6 +41,10 @@ struct LinearBuildPuzzleHandler: BuildPuzzleHandler {
         let provider = LinearPuzzleStateProvider()
         provider.padding.specificValue = .init(top: 8, left: 8, bottom: 8, right: 8)
         return provider
+    }
+    
+    func initializeCode() -> String {
+        isGroup ? "LinearGroup()" : "LinearBox()"
     }
 }
 
@@ -59,6 +63,17 @@ class LinearPuzzleStateProvider: BoxPuzzleStateProvider {
 
     override var states: [IPuzzleState] {
         super.states + [direction, format, reverse, space]
+    }
+
+    override func generateCode() -> [String] {
+        var codes = super.generateCode()
+        if let model = LinearPuzzleStateModel.deserialize(from: serialize()) {
+            if let v = model.direction?.getDirection() { codes.append(".direction(\(v.genCode()))") }
+            if let v = model.format?.getFormat() { codes.append(".format(\(v.genCode()))") }
+            if let v = model.reverse { codes.append(".reverse(\(v))") }
+            if let v = model.space { codes.append(".space(\(v))") }
+        }
+        return codes
     }
 
     override func bindState(to puzzle: PuzzlePiece) {

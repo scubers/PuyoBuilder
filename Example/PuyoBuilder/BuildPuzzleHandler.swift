@@ -24,6 +24,7 @@ protocol PuzzleTemplate {
 protocol BuildPuzzleHandler {
     func createPuzzle() -> PuzzlePiece
     func createState() -> PuzzleStateProvider
+    func initializeCode() -> String
 }
 
 typealias PuzzlePiece = BoxLayoutNode & AutoDisposable
@@ -36,7 +37,10 @@ protocol PuzzleStateProvider {
     func bindState(to puzzle: PuzzlePiece)
 
     func resume(_ param: [String: Any]?)
+
     func serialize() -> [String: Any]?
+    
+    func generateCode() -> [String]
 }
 
 extension BoxLayoutNode where Self: AutoDisposable {

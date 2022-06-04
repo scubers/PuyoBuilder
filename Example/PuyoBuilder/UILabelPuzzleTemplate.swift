@@ -26,6 +26,10 @@ struct UILabelBuildPuzzleHandler: BuildPuzzleHandler {
     func createState() -> PuzzleStateProvider {
         UILabelPuzzleStateProvider()
     }
+    
+    func initializeCode() -> String {
+        "UILabel()"
+    }
 }
 
 class UILabelPuzzleStateModel: BasePuzzleStateModel {
@@ -38,6 +42,14 @@ class UILabelPuzzleStateProvider: BasePuzzleStateProvider {
 
     override var states: [IPuzzleState] {
         [text] + super.states
+    }
+
+    override func generateCode() -> [String] {
+        var codes = super.generateCode()
+        if let model = UILabelPuzzleStateModel.deserialize(from: serialize()) {
+            if let v = model.text { codes.append(".text(\"\(v)\")") }
+        }
+        return codes
     }
 
     override func bindState(to puzzle: PuzzlePiece) {

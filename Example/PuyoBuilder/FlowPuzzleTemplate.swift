@@ -38,6 +38,10 @@ struct FlowBuildPuzzleHandler: BuildPuzzleHandler {
         provider.padding.specificValue = .init(top: 8, left: 8, bottom: 8, right: 8)
         return provider
     }
+    
+    func initializeCode() -> String {
+        isGroup ? "FlowGroup()" : "FlowBox()"
+    }
 }
 
 class FlowPuzzleStateModel: LinearPuzzleStateModel {
@@ -55,6 +59,17 @@ class FlowPuzzleStateProvider: LinearPuzzleStateProvider {
 
     override var states: [IPuzzleState] {
         super.states + [arrange, runFormat, itemSpace, runSpace]
+    }
+
+    override func generateCode() -> [String] {
+        var codes = super.generateCode()
+        if let model = FlowPuzzleStateModel.deserialize(from: serialize()) {
+            if let v = model.runFormat?.getFormat() { codes.append(".runFormat(\(v.genCode()))") }
+            if let v = model.arrange { codes.append(".arrange(\(v))") }
+            if let v = model.itemSpace { codes.append(".itemSpace(\(v))") }
+            if let v = model.runSpace { codes.append(".runSpace(\(v))") }
+        }
+        return codes
     }
 
     override func bindState(to puzzle: PuzzlePiece) {

@@ -26,6 +26,10 @@ struct UIImageBuildPuzzleHandler: BuildPuzzleHandler {
     func createState() -> PuzzleStateProvider {
         UIImagePuzzleStateProvider()
     }
+    
+    func initializeCode() -> String {
+        "UIImageView()"
+    }
 }
 
 class UIImagePuzzleStateModel: BasePuzzleStateModel {

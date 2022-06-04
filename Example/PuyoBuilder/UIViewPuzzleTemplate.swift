@@ -26,6 +26,10 @@ struct UIViewBuildPuzzleHandler: BuildPuzzleHandler {
     func createState() -> PuzzleStateProvider {
         UIViewPuzzleStateProvider()
     }
+    
+    func initializeCode() -> String {
+        "UIView()"
+    }
 }
 
 class UIViewPuzzleStateProvider: BasePuzzleStateProvider {}

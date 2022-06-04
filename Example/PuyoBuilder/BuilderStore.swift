@@ -123,4 +123,11 @@ extension BuilderStore {
             repaceRoot(item)
         }
     }
+
+    func exportCode() -> String {
+        if let codes = root.value?.generateCode(0) {
+            return codes.map { "\($0)\n" }.joined(separator: "")
+        }
+        return ""
+    }
 }

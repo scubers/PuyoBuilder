@@ -7,8 +7,8 @@
 //
 
 import Foundation
-import Puyopuyo
 import HandyJSON
+import Puyopuyo
 
 typealias CodableType = HandyJSON
 typealias CodableEnumType = HandyJSONEnum
@@ -208,5 +208,80 @@ enum PuzzleVisibility: String, CodableEnumType {
         case .free:
             return .free
         }
+    }
+}
+
+// code gen
+
+extension Alignment {
+    func genCode() -> String {
+        var values = [String]()
+        if contains(.top) { values.append(".top") }
+        if contains(.left) { values.append(".left") }
+        if contains(.bottom) { values.append(".bottom") }
+        if contains(.right) { values.append(".right") }
+        if contains(.horzCenter) { values.append(".horzCenter") }
+        if contains(.vertCenter) { values.append(".vertCenter") }
+        return "[\(values.joined(separator: ", "))]"
+    }
+}
+
+extension SizeDescription {
+    func genCode() -> String {
+        var param: String
+        switch sizeType {
+        case .fixed:
+            param = ".fix(\(fixedValue))"
+        case .ratio:
+            param = ".ratio(\(ratio))"
+        case .wrap:
+            let defaultValue = SizeDescription.wrap
+            var values = [String]()
+            if add != defaultValue.add { values.append("add: \(add)") }
+            if min != defaultValue.min { values.append("min: \(min)") }
+            if max != defaultValue.max { values.append("max: \(max)") }
+            if priority != defaultValue.priority { values.append("priority: \(priority)") }
+            if shrink != defaultValue.shrink { values.append("shrink: \(shrink)") }
+            if grow != defaultValue.grow { values.append("grow: \(grow)") }
+            if values.isEmpty {
+                param = ".wrap"
+            } else {
+                param = ".wrap(\(values.joined(separator: ", ")))"
+            }
+        case .aspectRatio:
+            param = ".aspectRatio(\(aspectRatio))"
+        }
+
+        return param
+    }
+}
+
+extension Format {
+    func genCode() -> String {
+        var param: String
+        switch self {
+        case .leading:
+            param = ".leading"
+        case .center:
+            param = ".center"
+        case .between:
+            param = ".between"
+        case .round:
+            param = ".round"
+        case .trailing:
+            param = ".trailing"
+        }
+        return param
+    }
+}
+
+extension Direction {
+    func genCode() -> String {
+        var param: String
+        switch self {
+        case .horizontal: param = ".horizontal"
+        case .vertical: param = ".vertical"
+        }
+        return param
     }
 }
