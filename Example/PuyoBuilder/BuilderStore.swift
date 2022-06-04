@@ -10,6 +10,8 @@ import Foundation
 import Puyopuyo
 
 class BuilderStore {
+    private let history = BuilderHistory<String?>(count: 100, first: nil)
+
     let root = State<BuilderPuzzleItem?>(nil)
 
     let selected = State<BuilderPuzzleItem?>(nil)
@@ -28,12 +30,18 @@ class BuilderStore {
 // MARK: - Structure change
 
 extension BuilderStore {
-    func repaceRoot(_ node: BuilderPuzzleItem?) {
+    private func resetRoot(_ node: BuilderPuzzleItem?) {
         root.value = node
         selected.value = nil
     }
 
+    func repaceRoot(_ node: BuilderPuzzleItem?) {
+        defer { record() }
+        resetRoot(node)
+    }
+
     func removeItem(_ item: BuilderPuzzleItem) {
+        defer { record() }
         item.removeFromParent()
         if item === selected.value {
             selected.value = nil
@@ -46,8 +54,32 @@ extension BuilderStore {
     }
 
     func append(item: BuilderPuzzleItem, for parent: BuilderPuzzleItem) {
+        defer { record() }
         parent.append(child: item)
         root.resend()
+    }
+}
+
+// MARK: - History
+
+extension BuilderStore {
+    func record() {
+        history.push(exportJson(prettyPrinted: false))
+    }
+
+    var canUndo: Bool { history.canUndo }
+    var canRedo: Bool { history.canRedo }
+
+    func undo() {
+        guard canUndo else { return }
+        history.undo()
+        resetRoot(buildWithJson(history.currentState))
+    }
+
+    func redo() {
+        guard canRedo else { return }
+        history.redo()
+        resetRoot(buildWithJson(history.currentState))
     }
 }
 
@@ -110,18 +142,19 @@ extension BuilderStore {
         return Helper.toJson(dict, prettyPrinted: prettyPrinted)
     }
 
-    func buildWithJson(_ json: String?) {
+    func buildWithJson(_ json: String?) -> BuilderPuzzleItem? {
         guard let value = Helper.fromJson(json) else {
-            repaceRoot(nil)
-            return
+            return nil
         }
         let width = (value["width"] as? CGFloat) ?? 200
         let height = (value["height"] as? CGFloat) ?? 200
         canvasSize.value = .init(width: width, height: height)
 
         if let root = value["root"] as? [String: Any], let item = BuilderPuzzleItem.deserialize(root) {
-            repaceRoot(item)
+            return item
         }
+
+        return nil
     }
 
     func exportCode() -> String {

@@ -93,7 +93,7 @@ class CanvasPanel: ZBox {
                 .width(.fill)
                 .space(8)
             }
-            .width(150)
+            .width(200)
             .clipToBounds(true)
             .cornerRadius(6)
             .space(4)

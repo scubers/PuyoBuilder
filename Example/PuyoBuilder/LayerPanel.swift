@@ -28,51 +28,72 @@ class LayerPanel: ZBox {
 
         let selected = store.selected
         attach {
-            RecycleBox(
-                sections: [
-                    ListRecycleSection(items: items.asOutput(), cell: { o, i in
-                        HBox().attach {
-                            UILabel().attach($0)
-                                .text(o.data.node.title)
-                                .width(.fill)
+            VBox().attach($0) {
+                RecycleBox(
+                    sections: [
+                        ListRecycleSection(items: items.asOutput(), cell: { o, i in
+                            HBox().attach {
+                                UILabel().attach($0)
+                                    .text(o.data.node.title)
+                                    .width(.fill)
 
-                            UIButton(type: .contactAdd).attach($0)
-                                .onControlEvent(.touchUpInside, Inputs { _ in
-                                    i.inContext { info in
-                                        this.value?.addChild(for: info.data.node)
-                                    }
-                                })
-                                .visibility(o.data.node.template.containerType.map { ($0 != .none).py_visibleOrGone() })
+                                UIButton(type: .contactAdd).attach($0)
+                                    .onControlEvent(.touchUpInside, Inputs { _ in
+                                        i.inContext { info in
+                                            this.value?.addChild(for: info.data.node)
+                                        }
+                                    })
+                                    .visibility(o.data.node.template.containerType.map { ($0 != .none).py_visibleOrGone() })
 
-                            UIButton().attach($0)
-                                .image(UIImage(systemName: "trash"))
-                                .userInteractionEnabled(true)
-                                .onTap {
-                                    i.inContext { info in
-                                        this.value?.removeItem(info.data.node)
+                                UIButton().attach($0)
+                                    .image(UIImage(systemName: "trash"))
+                                    .userInteractionEnabled(true)
+                                    .onTap {
+                                        i.inContext { info in
+                                            this.value?.removeItem(info.data.node)
+                                        }
                                     }
-                                }
-                        }
-                        .backgroundColor(Outputs.combine(selected, o.data.node).map { v1, v2 -> UIColor in
-                            if v1 === v2 {
-                                return UIColor.systemBlue.withAlphaComponent(0.2)
                             }
-                            return UIColor.clear
+                            .backgroundColor(Outputs.combine(selected, o.data.node).map { v1, v2 -> UIColor in
+                                if v1 === v2 {
+                                    return UIColor.systemBlue.withAlphaComponent(0.2)
+                                }
+                                return UIColor.clear
+                            })
+                            .padding(all: 4)
+                            .padding(left: o.data.depth.map { CGFloat($0) * 8 + 4 })
+                            .margin(bottom: 1)
+                            .justifyContent(.center)
+                            .space(4)
+                            .width(o.contentSize.width)
+                        }, didSelect: { info in
+                            this.value?.store.toggleSelect(info.data.node)
                         })
-                        .padding(all: 4)
-                        .padding(left: o.data.depth.map { CGFloat($0) * 8 + 4 })
-                        .margin(bottom: 1)
-                        .justifyContent(.center)
-                        .space(4)
-                        .width(o.contentSize.width)
-                    }, didSelect: { info in
-                        this.value?.store.toggleSelect(info.data.node)
-                    })
-                ].asOutput()
-            )
-            .attach($0)
+                    ].asOutput()
+                )
+                .attach($0)
+                .size(.fill, .fill)
+                .visibility(empty.map { (!$0).py_visibleOrNot() })
+
+                HGroup().attach($0) {
+                    SelectorButton().attach($0)
+                        .state(.init(selected: false, title: "Undo"))
+                        .width(.fill)
+                        .onTap(to: self) { this, _ in
+                            this.store.undo()
+                        }
+                    SelectorButton().attach($0)
+                        .width(.fill)
+                        .state(.init(selected: false, title: "Redo"))
+                        .onTap(to: self) { this, _ in
+                            this.store.redo()
+                        }
+                }
+                .space(8)
+                .padding(all: 8)
+                .width(.fill)
+            }
             .size(.fill, .fill)
-            .visibility(empty.map { (!$0).py_visibleOrGone() })
 
             UIButton(type: .contactAdd).attach($0)
                 .alignment(.center)

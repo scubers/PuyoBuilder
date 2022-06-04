@@ -30,8 +30,8 @@ class ViewController: UIViewController {
             .size(.fill, .fill)
         }
         .size(.fill, .fill)
-        
-        store.buildWithJson(Helper.defaultViewJson)
+
+        store.repaceRoot(store.buildWithJson(Helper.defaultViewJson))
     }
 
     override func viewWillLayoutSubviews() {
