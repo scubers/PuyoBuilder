@@ -13,6 +13,7 @@ import Puyopuyo
 class FlowBoxPuzzleTemplate: PuzzleTemplate {
     var templateId: String { "template.flowBox" }
     var name: String { "FlowBox" }
+    var containerType: PuzzleContainerType { .box }
 
     var builderHandler: BuildPuzzleHandler { FlowBuildPuzzleHandler(isGroup: false) }
 }
@@ -20,6 +21,7 @@ class FlowBoxPuzzleTemplate: PuzzleTemplate {
 class FlowGroupPuzzleTemplate: PuzzleTemplate {
     var templateId: String { "template.flowGroup" }
     var name: String { "FlowGroup" }
+    var containerType: PuzzleContainerType { .group }
 
     var builderHandler: BuildPuzzleHandler { FlowBuildPuzzleHandler(isGroup: true) }
 }
@@ -32,7 +34,9 @@ struct FlowBuildPuzzleHandler: BuildPuzzleHandler {
     }
 
     func createState() -> PuzzleStateProvider {
-        FlowPuzzleStateProvider()
+        let provider = FlowPuzzleStateProvider()
+        provider.padding.specificValue = .init(top: 8, left: 8, bottom: 8, right: 8)
+        return provider
     }
 }
 
@@ -63,7 +67,7 @@ class FlowPuzzleStateProvider: LinearPuzzleStateProvider {
 
     override func resume(_ param: [String: Any]?) {
         super.resume(param)
-        if let node = FlowPuzzleStateModel.from(param) {
+        if let node = FlowPuzzleStateModel.deserialize(from: param) {
             if let v = node.runFormat?.getFormat() { runFormat.state.value = v }
             if let v = node.arrange { arrange.state.value = v }
             if let v = node.itemSpace { itemSpace.state.value = v }
@@ -72,7 +76,7 @@ class FlowPuzzleStateProvider: LinearPuzzleStateProvider {
     }
 
     override func serialize() -> [String: Any]? {
-        let node = FlowPuzzleStateModel.from(super.serialize()) ?? FlowPuzzleStateModel()
+        let node = FlowPuzzleStateModel.deserialize(from: super.serialize()) ?? FlowPuzzleStateModel()
         let defaultMeasure = getDefaultMeasure() as! FlowRegulator
 
         if runFormat.state.value != defaultMeasure.runFormat {
@@ -88,7 +92,7 @@ class FlowPuzzleStateProvider: LinearPuzzleStateProvider {
             node.runSpace = runSpace.state.value
         }
 
-        return node.toDict()
+        return node.toJSON()
     }
 
     override func getDefaultMeasure() -> Measure {

@@ -15,13 +15,7 @@ class ZBoxPuzzleTemplate: PuzzleTemplate {
 
     var name: String { "ZBox" }
 
-    var initialNode: PuzzleNode {
-        .init().config { n in
-            n.nodeType = .box
-            n.layoutType = .z
-            n.padding = .init(top: 8, left: 8, bottom: 8, right: 8)
-        }
-    }
+    var containerType: PuzzleContainerType { .box }
 
     var builderHandler: BuildPuzzleHandler { ZBuildPuzzleHandler(isGroup: false) }
 }
@@ -30,12 +24,7 @@ class ZGroupPuzzleTemplate: PuzzleTemplate {
     var templateId: String { "template.zgroup" }
     var name: String { "ZGroup" }
 
-    var initialNode: PuzzleNode {
-        .init().config { n in
-            n.nodeType = .group
-            n.layoutType = .z
-        }
-    }
+    var containerType: PuzzleContainerType { .group }
 
     var builderHandler: BuildPuzzleHandler { ZBuildPuzzleHandler(isGroup: true) }
 }
@@ -48,7 +37,9 @@ struct ZBuildPuzzleHandler: BuildPuzzleHandler {
     }
 
     func createState() -> PuzzleStateProvider {
-        ZPuzzleStateProvider()
+        let provider = ZPuzzleStateProvider()
+        provider.padding.specificValue = .init(top: 8, left: 8, bottom: 8, right: 8)
+        return provider
     }
 }
 

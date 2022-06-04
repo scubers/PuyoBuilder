@@ -13,6 +13,8 @@ class UILabelPuzzleTemplate: PuzzleTemplate {
 
     var name: String { "UILabel" }
 
+    var containerType: PuzzleContainerType { .none }
+
     var builderHandler: BuildPuzzleHandler { UILabelBuildPuzzleHandler() }
 }
 
@@ -28,6 +30,7 @@ struct UILabelBuildPuzzleHandler: BuildPuzzleHandler {
 
 class UILabelPuzzleStateModel: BasePuzzleStateModel {
     var text: String?
+    var age: Int?
 }
 
 class UILabelPuzzleStateProvider: BasePuzzleStateProvider {
@@ -48,14 +51,14 @@ class UILabelPuzzleStateProvider: BasePuzzleStateProvider {
     override func resume(_ param: [String: Any]?) {
         super.resume(param)
 
-        if let node = UILabelPuzzleStateModel.from(param) {
+        if let node = UILabelPuzzleStateModel.deserialize(from: param) {
             text.state.value = node.text ?? ""
         }
     }
 
     override func serialize() -> [String: Any]? {
-        let node = UILabelPuzzleStateModel.from(super.serialize()) ?? UILabelPuzzleStateModel()
+        let node = UILabelPuzzleStateModel.deserialize(from: super.serialize()) ?? UILabelPuzzleStateModel()
         node.text = text.specificValue
-        return node.toDict()
+        return node.toJSON()
     }
 }

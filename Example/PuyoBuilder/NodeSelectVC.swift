@@ -32,6 +32,10 @@ class NodeSelectVC: UIViewController {
 
         let this = WeakableObject(value: self)
 
+        if isRoot {
+            state.value = state.value.filter { $0.containerType == .box }
+        }
+
         ZBox().attach(view) {
             RecycleBox(
                 sections: [

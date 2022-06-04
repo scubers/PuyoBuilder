@@ -8,9 +8,16 @@
 
 import Puyopuyo
 
+enum PuzzleContainerType {
+    case none
+    case box
+    case group
+}
+
 protocol PuzzleTemplate {
     var name: String { get }
     var templateId: String { get }
+    var containerType: PuzzleContainerType { get }
     var builderHandler: BuildPuzzleHandler { get }
 }
 

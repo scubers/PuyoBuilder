@@ -16,6 +16,7 @@ class PuzzleManager {
     private(set) var templates: [PuzzleTemplate] = [
         UIViewPuzzleTemplate(),
         UILabelPuzzleTemplate(),
+        UIImagePuzzleTemplate(),
         LinearBoxPuzzleTemplate(),
         FlowBoxPuzzleTemplate(),
         ZBoxPuzzleTemplate(),

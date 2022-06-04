@@ -7,9 +7,10 @@
 //
 
 import Foundation
+import HandyJSON
 import Puyopuyo
 
-final class PuzzleState<T>: IPuzzleState, Outputing, Inputing, SpecificValueable {
+final class PuzzleState<T>: IPuzzleState, Outputing, Inputing, SpecificValueable, OutputingModifier {
     init(title: String, value: T) {
         self.title = title
         state.value = value
@@ -32,10 +33,11 @@ final class PuzzleState<T>: IPuzzleState, Outputing, Inputing, SpecificValueable
     }
 }
 
-class BasePuzzleStateModel: Codable {
+class BasePuzzleStateModel: HandyJSON {
+    required init() {}
     var activated: Bool?
     var flowEnding: Bool?
-    var margin: UIEdgeInsets?
+    var margin: PuzzleInsets?
     var alignment: PuzzleAlignment?
     var visibility: PuzzleVisibility?
     var width: PuzzleSizeDesc?
@@ -74,10 +76,10 @@ class BasePuzzleStateProvider: PuzzleStateProvider {
     }
 
     func resume(_ param: [String: Any]?) {
-        if let node = BasePuzzleStateModel.from(param) {
+        if let node = BasePuzzleStateModel.deserialize(from: param) {
             if let v = node.activated { activated.state.value = v }
             if let v = node.flowEnding { flowEnding.state.value = v }
-            if let v = node.margin { margin.state.value = v }
+            if let v = node.margin?.getInsets() { margin.state.value = v }
             if let v = node.alignment?.getAlignment() { alignment.state.value = v }
             if let v = node.visibility?.getVisibility() { visibility.state.value = v }
             if let v = node.width?.getSizeDescription() { width.state.value = v }
@@ -94,7 +96,7 @@ class BasePuzzleStateProvider: PuzzleStateProvider {
             node.flowEnding = flowEnding.state.value
         }
         if margin.state.value != defaultMeasure.margin {
-            node.margin = margin.state.value
+            node.margin = PuzzleInsets.from(margin.state.value)
         }
         if alignment.state.value != defaultMeasure.alignment {
             node.alignment = PuzzleAlignment.from(alignment.state.value)
@@ -108,7 +110,7 @@ class BasePuzzleStateProvider: PuzzleStateProvider {
         if height.state.value != defaultMeasure.size.height {
             node.height = PuzzleSizeDesc.from(height.state.value)
         }
-        return node.toDict()
+        return node.toJSON()
     }
 
     lazy var defaultMeasure: Measure = getDefaultMeasure()
@@ -119,7 +121,7 @@ class BasePuzzleStateProvider: PuzzleStateProvider {
 }
 
 class BoxPuzzleStateModel: BasePuzzleStateModel {
-    var padding: UIEdgeInsets?
+    var padding: PuzzleInsets?
     var justifyContent: PuzzleAlignment?
 }
 
@@ -140,22 +142,22 @@ class BoxPuzzleStateProvider: BasePuzzleStateProvider {
 
     override func resume(_ param: [String: Any]?) {
         super.resume(param)
-        if let node = BoxPuzzleStateModel.from(param) {
-            if let v = node.padding { padding.state.value = v }
+        if let node = BoxPuzzleStateModel.deserialize(from: param) {
+            if let v = node.padding?.getInsets() { padding.state.value = v }
             if let v = node.justifyContent?.getAlignment() { justifyContent.state.value = v }
         }
     }
 
     override func serialize() -> [String: Any]? {
-        let node = BoxPuzzleStateModel.from(super.serialize()) ?? BoxPuzzleStateModel()
+        let node = BoxPuzzleStateModel.deserialize(from: super.serialize()) ?? BoxPuzzleStateModel()
         let defaultMeasure = getDefaultMeasure() as! Regulator
         if padding.state.value != defaultMeasure.padding {
-            node.padding = padding.state.value
+            node.padding = PuzzleInsets.from(padding.state.value)
         }
         if justifyContent.state.value != defaultMeasure.justifyContent {
             node.justifyContent = PuzzleAlignment.from(justifyContent.state.value)
         }
-        return node.toDict()
+        return node.toJSON()
     }
 
     override func getDefaultMeasure() -> Measure {

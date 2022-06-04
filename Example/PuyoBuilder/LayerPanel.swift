@@ -26,7 +26,7 @@ class LayerPanel: ZBox {
 
         let this = WeakableObject<LayerPanel>(value: self)
 
-        let selectedId = store.selected
+        let selected = store.selected
         attach {
             RecycleBox(
                 sections: [
@@ -39,22 +39,22 @@ class LayerPanel: ZBox {
                             UIButton(type: .contactAdd).attach($0)
                                 .onControlEvent(.touchUpInside, Inputs { _ in
                                     i.inContext { info in
-                                        this.value?.addChild(for: info.data.node.id)
+                                        this.value?.addChild(for: info.data.node)
                                     }
                                 })
-//                                .visibility(o.data.node.nodeType.map { ($0 != .concrete).py_visibleOrGone() })
+                                .visibility(o.data.node.template.containerType.map { ($0 != .none).py_visibleOrGone() })
 
                             UIButton().attach($0)
                                 .image(UIImage(systemName: "trash"))
                                 .userInteractionEnabled(true)
                                 .onTap {
                                     i.inContext { info in
-                                        this.value?.removeSelf(id: info.data.node.id)
+                                        this.value?.removeItem(info.data.node)
                                     }
                                 }
                         }
-                        .backgroundColor(Outputs.combine(selectedId, o.data.node.id).map { v1, v2 -> UIColor in
-                            if v1 == v2 {
+                        .backgroundColor(Outputs.combine(selected, o.data.node).map { v1, v2 -> UIColor in
+                            if v1 === v2 {
                                 return UIColor.systemBlue.withAlphaComponent(0.2)
                             }
                             return UIColor.clear
@@ -66,11 +66,7 @@ class LayerPanel: ZBox {
                         .space(4)
                         .width(o.contentSize.width)
                     }, didSelect: { info in
-                        if let id = this.value?.store.selected.value, id == info.data.node.id {
-                            this.value?.store.selected.value = nil
-                        } else {
-                            this.value?.store.selected.value = info.data.node.id
-                        }
+                        this.value?.store.toggleSelect(info.data.node)
                     })
                 ].asOutput()
             )
@@ -112,15 +108,15 @@ class LayerPanel: ZBox {
         findTopViewController(for: self)?.present(vc, animated: true)
     }
 
-    func addChild(for id: String) {
+    func addChild(for parent: BuilderPuzzleItem) {
         let vc = NodeSelectVC(isRoot: false) {
-            self.store.appendNode(BuilderPuzzleItem(template: $0), for: id)
+            self.store.append(item: BuilderPuzzleItem(template: $0), for: parent)
         }
         findTopViewController(for: self)?.present(vc, animated: true)
     }
 
-    func removeSelf(id: String) {
-        _ = store.removeNode(id)
+    func removeItem(_ item: BuilderPuzzleItem) {
+        store.removeItem(item)
     }
 }
 

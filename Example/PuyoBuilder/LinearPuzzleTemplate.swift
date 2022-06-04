@@ -14,6 +14,8 @@ class LinearBoxPuzzleTemplate: PuzzleTemplate {
     var templateId: String { "template.linearBox" }
 
     var name: String { "LinearBox" }
+    
+    var containerType: PuzzleContainerType { .box }
 
     var builderHandler: BuildPuzzleHandler { LinearBuildPuzzleHandler(isGroup: false) }
 }
@@ -22,6 +24,8 @@ class LinearGroupPuzzleTemplate: PuzzleTemplate {
     var templateId: String { "template.linearGroup" }
 
     var name: String { "LinearGroup" }
+    
+    var containerType: PuzzleContainerType { .group }
 
     var builderHandler: BuildPuzzleHandler { LinearBuildPuzzleHandler(isGroup: true) }
 }
@@ -34,7 +38,9 @@ struct LinearBuildPuzzleHandler: BuildPuzzleHandler {
     }
 
     func createState() -> PuzzleStateProvider {
-        LinearPuzzleStateProvider()
+        let provider = LinearPuzzleStateProvider()
+        provider.padding.specificValue = .init(top: 8, left: 8, bottom: 8, right: 8)
+        return provider
     }
 }
 
@@ -65,7 +71,7 @@ class LinearPuzzleStateProvider: BoxPuzzleStateProvider {
 
     override func resume(_ param: [String: Any]?) {
         super.resume(param)
-        if let node = LinearPuzzleStateModel.from(param) {
+        if let node = LinearPuzzleStateModel.deserialize(from: param) {
             if let v = node.direction?.getDirection() { direction.state.value = v }
             if let v = node.format?.getFormat() { format.state.value = v }
             if let v = node.reverse { reverse.state.value = v }
@@ -74,7 +80,7 @@ class LinearPuzzleStateProvider: BoxPuzzleStateProvider {
     }
 
     override func serialize() -> [String: Any]? {
-        let node = LinearPuzzleStateModel.from(super.serialize()) ?? LinearPuzzleStateModel()
+        let node = LinearPuzzleStateModel.deserialize(from: super.serialize()) ?? LinearPuzzleStateModel()
         let defaultMeasure = getDefaultMeasure() as! LinearRegulator
 
         if direction.state.value != defaultMeasure.direction {
@@ -91,7 +97,7 @@ class LinearPuzzleStateProvider: BoxPuzzleStateProvider {
             node.space = space.state.value
         }
 
-        return node.toDict()
+        return node.toJSON()
     }
 
     override func getDefaultMeasure() -> Measure {

@@ -13,6 +13,8 @@ class UIViewPuzzleTemplate: PuzzleTemplate {
 
     var name: String { "UIView" }
 
+    var containerType: PuzzleContainerType { .none }
+
     var builderHandler: BuildPuzzleHandler { UIViewBuildPuzzleHandler() }
 }
 

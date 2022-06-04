@@ -8,167 +8,12 @@
 
 import Foundation
 import Puyopuyo
+import HandyJSON
 
-extension Encodable {
-    func encodeToJson(pretty: Bool = false) -> String? {
-        let encoder = JSONEncoder()
-        if pretty {
-            encoder.outputFormatting = .prettyPrinted
-        }
-        if let data = try? encoder.encode(self), let json = String(data: data, encoding: .utf8) {
-            return json
-        }
-        return nil
-    }
+typealias CodableType = HandyJSON
+typealias CodableEnumType = HandyJSONEnum
 
-    func toDict() -> [String: Any]? {
-        if let json = encodeToJson(), let data = json.data(using: .utf8), let obj = try? JSONSerialization.jsonObject(with: data) {
-            return obj as? [String: Any]
-        }
-        return nil
-    }
-}
-
-extension Decodable {
-    static func from(json: String?) -> Self? {
-        guard let json = json else {
-            return nil
-        }
-
-        guard let data = json.data(using: .utf8) else {
-            return nil
-        }
-
-        return try? JSONDecoder().decode(Self.self, from: data)
-    }
-
-    static func from(_ json: [String: Any]?) -> Self? {
-        guard let json = json, let data = try? JSONSerialization.data(withJSONObject: json, options: .fragmentsAllowed) else {
-            return nil
-        }
-
-        return try? JSONDecoder().decode(Self.self, from: data)
-    }
-}
-
-extension Encodable where Self: Decodable {
-    func jsonCopy() -> Self? {
-        return Self.from(json: encodeToJson())
-    }
-}
-
-class PuzzleCanvas: Codable {
-    required init() {}
-
-    var width: CGFloat = 250
-    var height: CGFloat = 250
-
-    var root: PuzzleNode?
-}
-
-class PuzzleNode: Codable {
-    required init() {}
-
-    enum NodeType: String, Codable {
-        case concrete
-        case box
-        case group
-    }
-
-    enum LayoutType: String, Codable {
-        case linear
-        case flow
-        case z
-    }
-
-    func config(_ action: (PuzzleNode) -> Void) -> PuzzleNode {
-        action(self)
-        return self
-    }
-
-    var id = UUID().description
-
-    /// layout or normal view
-    var nodeType: NodeType = .box
-
-    var layoutType: LayoutType?
-
-    var concreteViewType: String?
-
-    ///
-    /// subclassing
-    var titleDescr: String {
-        fatalError()
-    }
-
-    var children: [PuzzleNode]?
-
-    func append(_ child: PuzzleNode) {
-        children?.append(child)
-        if children == nil {
-            children = [child]
-        }
-    }
-
-    // MARK: - Base Props
-
-    var activated: Bool?
-    var flowEnding: Bool?
-    var margin: PuzzleInsets?
-    var alignment: PuzzleAlignment?
-    var width: PuzzleSizeDesc?
-    var height: PuzzleSizeDesc?
-    var visibility: PuzzleVisibility?
-
-    // MARK: - Regulator Props
-
-    var justifyContent: PuzzleAlignment?
-    var padding: PuzzleInsets?
-
-    // MARK: - Linear Props
-
-    var direction: PuzzleDirection?
-    var reverse: Bool?
-    var space: CGFloat?
-    var format: PuzzleFormat?
-
-    // MARK: - Flow props
-
-    var arrange: Int?
-    var itemSpace: CGFloat?
-    var runSpace: CGFloat?
-    var runForamt: PuzzleFormat?
-
-    // MARK: - Extra
-
-//    var extra: [String: Codable]?
-    var extraJson: String?
-}
-
-extension PuzzleNode {
-    // MARK: Methods
-
-    var rootable: Bool {
-        nodeType == .box
-    }
-
-    func copy(_ action: ((PuzzleNode) -> PuzzleNode)?) -> PuzzleNode {
-        let singleCopy = action ?? { $0.jsonCopy()! }
-        let new = singleCopy(self)
-        new.children = children?.map { $0.copy(singleCopy) }
-        return new
-    }
-
-    func getExtra<T: Decodable>() -> T? {
-        return T.from(json: extraJson)
-    }
-
-    func setExtra<T: Encodable>(_ value: T?) {
-        extraJson = value?.encodeToJson()
-    }
-}
-
-struct PuzzleInsets: Codable {
+struct PuzzleInsets: CodableType {
     var top: CGFloat?
     var left: CGFloat?
     var bottom: CGFloat?
@@ -183,10 +28,10 @@ struct PuzzleInsets: Codable {
     }
 }
 
-class PuzzleSizeDesc: Codable {
+class PuzzleSizeDesc: CodableType {
     required init() {}
 
-    enum SizeType: String, Codable {
+    enum SizeType: String, CodableEnumType {
         case fixed
         case wrap
         case ratio
@@ -243,9 +88,9 @@ class PuzzleSizeDesc: Codable {
     }
 }
 
-class PuzzleAlignment: Codable {
+class PuzzleAlignment: CodableType {
     required init() {}
-    enum AlignmentType: String, Codable {
+    enum AlignmentType: String, CodableEnumType {
         case none, top, left, bottom, right, horzCenter, vertCenter
     }
 
@@ -280,7 +125,7 @@ class PuzzleAlignment: Codable {
     }
 }
 
-enum PuzzleDirection: String, Codable {
+enum PuzzleDirection: String, CodableEnumType {
     case horizontal, vertical
 
     func getDirection() -> Direction {
@@ -302,7 +147,7 @@ enum PuzzleDirection: String, Codable {
     }
 }
 
-enum PuzzleFormat: String, Codable {
+enum PuzzleFormat: String, CodableEnumType {
     case leading, center, between, round, trailing
 
     func getFormat() -> Format {
@@ -336,7 +181,7 @@ enum PuzzleFormat: String, Codable {
     }
 }
 
-enum PuzzleVisibility: String, Codable {
+enum PuzzleVisibility: String, CodableEnumType {
     case visible, invisible, gone, free
 
     func getVisibility() -> Visibility {

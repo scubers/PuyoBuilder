@@ -22,18 +22,13 @@ class PropsPanel: ZBox {
     }
 
     override func buildBody() {
-        let this = WeakableObject(value: self)
         attach {
             UIScrollView().attach($0) {
                 VBox().attach($0) {
                     store.selected.safeBind(to: $0) { vbox, id in
                         vbox.layoutChildren.forEach { $0.removeFromSuperBox() }
 
-                        guard let id = id, let this = this.value, let provider = this.store.getProvider(id) else {
-                            return
-                        }
-
-                        for state in provider.states {
+                        for state in id?.provider.states ?? [] {
                             if let view = InspectorViewFactory().createInspect(state) {
                                 view.dislplayView.attach(vbox)
                                     .width(.fill)
