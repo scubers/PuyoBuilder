@@ -45,23 +45,22 @@ class BasePuzzleStateModel: HandyJSON {
 }
 
 class BasePuzzleStateProvider: PuzzleStateProvider {
-    lazy var activated = PuzzleState(title: "Activated", value: defaultMeasure.activated)
-    lazy var flowEnding = PuzzleState(title: "FlowEnding", value: defaultMeasure.flowEnding)
-    lazy var margin = PuzzleState(title: "Margin", value: defaultMeasure.margin)
-    lazy var alignment = PuzzleState(title: "Alignment", value: defaultMeasure.alignment)
-    lazy var visibility = PuzzleState(title: "Visibility", value: Visibility.visible)
     lazy var width = PuzzleState(title: "Width", value: defaultMeasure.size.width)
     lazy var height = PuzzleState(title: "Height", value: defaultMeasure.size.height)
+    lazy var visibility = PuzzleState(title: "Visibility", value: Visibility.visible)
+    lazy var margin = PuzzleState(title: "Margin", value: defaultMeasure.margin)
+    lazy var alignment = PuzzleState(title: "Alignment", value: defaultMeasure.alignment)
+    lazy var flowEnding = PuzzleState(title: "FlowEnding", value: defaultMeasure.flowEnding)
 
     var states: [IPuzzleState] {
         [
-            activated,
-            flowEnding,
-            margin,
-            alignment,
+//            activated,
             width,
             height,
             visibility,
+            margin,
+            alignment,
+            flowEnding,
         ]
     }
 
@@ -80,7 +79,6 @@ class BasePuzzleStateProvider: PuzzleStateProvider {
     }
 
     func bindState(to puzzle: PuzzlePiece) {
-        puzzle._bind(activated, action: { $0.layoutMeasure.activated = $1 })
         puzzle._bind(flowEnding, action: { $0.layoutMeasure.flowEnding = $1 })
         puzzle._bind(margin, action: { $0.layoutMeasure.margin = $1 })
         puzzle._bind(alignment, action: { $0.layoutMeasure.alignment = $1 })
@@ -91,7 +89,7 @@ class BasePuzzleStateProvider: PuzzleStateProvider {
 
     func resume(_ param: [String: Any]?) {
         if let node = BasePuzzleStateModel.deserialize(from: param) {
-            if let v = node.activated { activated.state.value = v }
+//            if let v = node.activated { activated.state.value = v }
             if let v = node.flowEnding { flowEnding.state.value = v }
             if let v = node.margin?.getInsets() { margin.state.value = v }
             if let v = node.alignment?.getAlignment() { alignment.state.value = v }
@@ -103,9 +101,9 @@ class BasePuzzleStateProvider: PuzzleStateProvider {
 
     func serialize() -> [String: Any]? {
         let node = BasePuzzleStateModel()
-        if activated.state.value != defaultMeasure.activated {
-            node.activated = activated.state.value
-        }
+//        if activated.state.value != defaultMeasure.activated {
+//            node.activated = activated.state.value
+//        }
         if flowEnding.state.value != defaultMeasure.flowEnding {
             node.flowEnding = flowEnding.state.value
         }

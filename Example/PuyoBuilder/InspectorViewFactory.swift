@@ -9,27 +9,37 @@
 import Puyopuyo
 import UIKit
 
+class MultiInputs<T>: Inputing {
+    typealias InputType = T
+    private let inputs: [Inputs<T>]
+    init(_ inputs: [Inputs<T>]) {
+        self.inputs = inputs
+    }
+
+    func input(value: T) {
+        inputs.forEach { $0.input(value: value) }
+    }
+}
+
 struct InspectorViewFactory {
-    func createInspect(_ state: IPuzzleState) -> ViewDisplayable? {
+    func createInspect(_ state: IPuzzleState, onChanged: SimpleIO<Void>) -> ViewDisplayable? {
         if let state = state as? PuzzleState<Bool> {
             return BoolInspector().attach()
                 .setState(\.title, state.title)
                 .setState(\.value, state.state)
-                .onEvent(state.state)
-        }
-        if let state = state as? PuzzleState<UIEdgeInsets> {
+                .onEvent(MultiInputs([state.state.asInput(), onChanged.asInput { _ in }]))
+
+        } else if let state = state as? PuzzleState<UIEdgeInsets> {
             return InsetsInspector()
                 .attach()
                 .state(.init(title: state.title, insets: state.state.value))
-                .onEvent(state.state)
-        }
-        if let state = state as? PuzzleState<Alignment> {
+                .onEvent(MultiInputs([state.state.asInput(), onChanged.asInput { _ in }]))
+        } else if let state = state as? PuzzleState<Alignment> {
             return AlignmentInspector().attach()
                 .setState(\.title, state.title)
                 .setState(\.alignment, state.state)
-                .onEvent(state.state)
-        }
-        if let state = state as? PuzzleState<Visibility> {
+                .onEvent(MultiInputs([state.state.asInput(), onChanged.asInput { _ in }]))
+        } else if let state = state as? PuzzleState<Visibility> {
             let selection = [
                 Selection(title: "Visible", value: Visibility.visible),
                 .init(title: "Gone", value: Visibility.gone),
@@ -41,9 +51,8 @@ struct InspectorViewFactory {
             }
             return SelectionInspector(title: state.title, selection: selection).attach()
                 .state(selected)
-                .onEvent(state.state)
-        }
-        if let state = state as? PuzzleState<Direction> {
+                .onEvent(MultiInputs([state.state.asInput(), onChanged.asInput { _ in }]))
+        } else if let state = state as? PuzzleState<Direction> {
             let selection = [
                 Selection(title: "Horz", value: Direction.horizontal),
                 Selection(title: "Vert", value: .vertical),
@@ -53,19 +62,16 @@ struct InspectorViewFactory {
             }
             return SelectionInspector(title: state.title, selection: selection).attach()
                 .state(selected)
-                .onEvent(state.state)
-        }
-        if let state = state as? PuzzleState<SizeDescription> {
+                .onEvent(MultiInputs([state.state.asInput(), onChanged.asInput { _ in }]))
+        } else if let state = state as? PuzzleState<SizeDescription> {
             let title = state.title
             return SizeDescriptionInspector()
                 .attach()
                 .state(state.state.map {
                     .init(title: title, sizeType: $0.sizeType, fixedValue: $0.fixedValue, ratio: $0.ratio, add: $0.add, min: $0.min, max: $0.max, priority: $0.priority, shrink: $0.shrink, grow: $0.grow, aspectRatio: $0.aspectRatio)
                 })
-                .onEvent(state.state)
-        }
-
-        if let state = state as? PuzzleState<Format> {
+                .onEvent(MultiInputs([state.state.asInput(), onChanged.asInput { _ in }]))
+        } else if let state = state as? PuzzleState<Format> {
             let selection = [
                 Selection(title: "Leading", value: Format.leading),
                 Selection(title: "Center", value: .center),
@@ -78,26 +84,24 @@ struct InspectorViewFactory {
             }
             return SelectionInspector(title: state.title, selection: selection).attach()
                 .state(selected)
-                .onEvent(state.state)
-        }
-        if let state = state as? PuzzleState<CGFloat> {
+                .onEvent(MultiInputs([state.state.asInput(), onChanged.asInput { _ in }]))
+        } else if let state = state as? PuzzleState<CGFloat> {
             return CGFloatInspector().attach()
                 .setState(\.title, state.title)
                 .setState(\.value, state.state)
-                .onEvent(state.state)
-        }
-        if let state = state as? PuzzleState<Int> {
+                .onEvent(MultiInputs([state.state.asInput(), onChanged.asInput { _ in }]))
+        } else if let state = state as? PuzzleState<Int> {
             return CGFloatInspector().attach()
                 .setState(\.title, state.title)
                 .setState(\.value, state.state.map { CGFloat($0) })
-                .onEvent(state.state.asInput { Int($0) })
-        }
-        if let state = state as? PuzzleState<String> {
+                .onEvent(MultiInputs([state.state.asInput { Int($0) }, onChanged.asInput { _ in }]))
+        } else if let state = state as? PuzzleState<String> {
             return StringInspector().attach()
                 .setState(\.title, state.title)
                 .setState(\.value, state.state)
-                .onEvent(state.state)
+                .onEvent(MultiInputs([state.state.asInput(), onChanged.asInput { _ in }]))
+        } else {
+            fatalError()
         }
-        fatalError()
     }
 }

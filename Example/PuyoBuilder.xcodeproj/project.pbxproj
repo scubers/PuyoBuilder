@@ -43,6 +43,8 @@
 		09954F70284A7328005B402A /* BuilderPuzzleItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09954F6F284A7328005B402A /* BuilderPuzzleItem.swift */; };
 		09954F74284BBDCE005B402A /* UIImagePuzzleTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09954F73284BBDCE005B402A /* UIImagePuzzleTemplate.swift */; };
 		09954F76284BD493005B402A /* BuilderHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09954F75284BD493005B402A /* BuilderHistory.swift */; };
+		09954F78284C9775005B402A /* SettingPannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09954F77284C9775005B402A /* SettingPannel.swift */; };
+		09954F7D284C9B6C005B402A /* PhoneViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09954F7C284C9B6C005B402A /* PhoneViewController.swift */; };
 		28211C85A23069A1DD202176 /* Pods_PuyoBuilder_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04A1C3D714D6E8756DD08471 /* Pods_PuyoBuilder_Example.framework */; };
 		28EA1FB33035E0FAAA1AEF6D /* Pods_PuyoBuilder_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C14E97FE272F2E9C82E46408 /* Pods_PuyoBuilder_Tests.framework */; };
 		607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD51AFB9204008FA782 /* AppDelegate.swift */; };
@@ -103,6 +105,8 @@
 		09954F6F284A7328005B402A /* BuilderPuzzleItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuilderPuzzleItem.swift; sourceTree = "<group>"; };
 		09954F73284BBDCE005B402A /* UIImagePuzzleTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImagePuzzleTemplate.swift; sourceTree = "<group>"; };
 		09954F75284BD493005B402A /* BuilderHistory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuilderHistory.swift; sourceTree = "<group>"; };
+		09954F77284C9775005B402A /* SettingPannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingPannel.swift; sourceTree = "<group>"; };
+		09954F7C284C9B6C005B402A /* PhoneViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneViewController.swift; sourceTree = "<group>"; };
 		263A03F08B4D1DD062C03527 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		5B0B1B1109CA217CF1EBDB36 /* PuyoBuilder.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = PuyoBuilder.podspec; path = ../PuyoBuilder.podspec; sourceTree = "<group>"; };
 		607FACD01AFB9204008FA782 /* PuyoBuilder_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PuyoBuilder_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -158,6 +162,7 @@
 		096A9FAA283953A300C6283E /* View */ = {
 			isa = PBXGroup;
 			children = (
+				09954F7B284C9B64005B402A /* ViewController */,
 				09954F6A2847C74D005B402A /* JsonView */,
 				09954F692847C732005B402A /* CommonView */,
 				09954F682847C71B005B402A /* PropsPanel */,
@@ -229,6 +234,7 @@
 			isa = PBXGroup;
 			children = (
 				096A9FB5283A148800C6283E /* LayerPanel.swift */,
+				09954F77284C9775005B402A /* SettingPannel.swift */,
 			);
 			name = LayerPanel;
 			sourceTree = "<group>";
@@ -268,6 +274,14 @@
 				09954F6B2847C75B005B402A /* JsonViewVC.swift */,
 			);
 			name = JsonView;
+			sourceTree = "<group>";
+		};
+		09954F7B284C9B64005B402A /* ViewController */ = {
+			isa = PBXGroup;
+			children = (
+				09954F7C284C9B6C005B402A /* PhoneViewController.swift */,
+			);
+			name = ViewController;
 			sourceTree = "<group>";
 		};
 		607FACC71AFB9204008FA782 = {
@@ -562,7 +576,9 @@
 				096A9FD3283BDA8E00C6283E /* CGFloatInspector.swift in Sources */,
 				0956C5C52843890C001A7F8F /* CGFloatInputView.swift in Sources */,
 				09954F74284BBDCE005B402A /* UIImagePuzzleTemplate.swift in Sources */,
+				09954F78284C9775005B402A /* SettingPannel.swift in Sources */,
 				09954F6C2847C75B005B402A /* JsonViewVC.swift in Sources */,
+				09954F7D284C9B6C005B402A /* PhoneViewController.swift in Sources */,
 				096A9FC0283A37B800C6283E /* DropDownableView.swift in Sources */,
 				096A9FBA283A14F000C6283E /* PropsPanel.swift in Sources */,
 				096A9FC3283A989300C6283E /* SizeDescriptionInspector.swift in Sources */,

@@ -22,6 +22,12 @@ class PropsPanel: ZBox {
     }
 
     override func buildBody() {
+        let onChanged = SimpleIO<Void>()
+
+        onChanged.debounce(interval: 0.5).dispatchMain().safeBind(to: self) { this, _ in
+            this.store.record()
+        }
+
         attach {
             UIScrollView().attach($0) {
                 VBox().attach($0) {
@@ -29,7 +35,7 @@ class PropsPanel: ZBox {
                         vbox.layoutChildren.forEach { $0.removeFromSuperBox() }
 
                         for state in id?.provider.states ?? [] {
-                            if let view = InspectorViewFactory().createInspect(state) {
+                            if let view = InspectorViewFactory().createInspect(state, onChanged: onChanged) {
                                 view.dislplayView.attach(vbox)
                                     .width(.fill)
                             }

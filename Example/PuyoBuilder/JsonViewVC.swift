@@ -30,17 +30,27 @@ class JsonViewVC: UIViewController {
         view.backgroundColor = .systemGroupedBackground
 
         VBox().attach(view) {
-            SelectorButton().attach($0)
-                .state(.init(selected: false, title: "Import"))
-                .alignment(.right)
-                .onTap(to: self) { this, _ in
-                    let store = this.store
-                    let json = this.text.value
+            HGroup().attach($0) {
+                UIButton().attach($0)
+                    .text("Close")
+                    .onControlEvent(.touchUpInside, Inputs { [weak self] _ in
+                        self?.dismiss(animated: true)
+                    })
 
-                    this.dismiss(animated: true) {
-                        store.buildWithJson(json)
+                SelectorButton().attach($0)
+                    .state(.init(selected: false, title: "Import"))
+                    .alignment(.right)
+                    .onTap(to: self) { this, _ in
+                        let store = this.store
+                        let json = this.text.value
+
+                        this.dismiss(animated: true) {
+                            store.repaceRoot(store.buildWithJson(json))
+                        }
                     }
-                }
+            }
+            .format(.between)
+            .width(.fill)
 
             ZBox().attach($0) {
                 UITextView().attach($0)

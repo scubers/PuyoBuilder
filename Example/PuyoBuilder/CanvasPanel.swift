@@ -26,13 +26,9 @@ class CanvasPanel: ZBox {
     }
 
     override func buildBody() {
-        let this = WeakableObject(value: self)
-
         attach {
-            let colorizeIsOn = State(true)
-
             CanvasView(store: store).attach($0) {
-                colorizeIsOn.safeBind(to: $0) { view, isOn in
+                store.colorizeSetting.safeBind(to: $0) { view, isOn in
                     if isOn {
                         view.colorizeSubviews { Helper.randomColor() }
                     } else {
@@ -40,66 +36,6 @@ class CanvasPanel: ZBox {
                     }
                 }
             }
-
-            VBox().attach($0) {
-                HGroup().attach($0) {
-                    PropsTitleView().attach($0)
-                        .text("Colorize")
-
-                    UISwitch().attach($0)
-                        .isOn(colorizeIsOn)
-                }
-                .space(4)
-                .justifyContent(.center)
-                .width(.fill)
-                PropsInputView().attach($0)
-                    .setState(\.title, "Width")
-                    .setState(\.value, store.canvasSize.binder.width)
-                    .onEvent(Inputs {
-                        this.value?.store.canvasSize.value.width = $0
-                    })
-                    .width(.fill)
-                PropsInputView().attach($0)
-                    .setState(\.title, "Height")
-                    .setState(\.value, store.canvasSize.binder.height)
-                    .onEvent(Inputs {
-                        this.value?.store.canvasSize.value.height = $0
-                    })
-                    .width(.fill)
-
-                VFlow().attach($0) {
-                    SelectorButton().attach($0)
-                        .state(.init(selected: false, title: "Export"))
-                        .onTap(to: self) { this, _ in
-                            if let json = this.store.exportJson(prettyPrinted: true) {
-                                print(this.store.exportJson(prettyPrinted: false) ?? "")
-                                findTopViewController(for: this)?.present(JsonViewVC(store: this.store, json: json), animated: true)
-                            }
-                        }
-                    SelectorButton().attach($0)
-                        .state(.init(selected: false, title: "Import"))
-                        .onTap(to: self) { this, _ in
-                            findTopViewController(for: this)?.present(JsonViewVC(store: this.store, json: ""), animated: true)
-                        }
-
-                    SelectorButton().attach($0)
-                        .state(.init(selected: false, title: "Code"))
-                        .onTap(to: self) { this, _ in
-                            let json = this.store.exportCode()
-                            print(this.store.exportJson(prettyPrinted: false) ?? "")
-                            findTopViewController(for: this)?.present(JsonViewVC(store: this.store, json: json), animated: true)
-                        }
-                }
-                .width(.fill)
-                .space(8)
-            }
-            .width(200)
-            .clipToBounds(true)
-            .cornerRadius(6)
-            .space(4)
-            .padding(all: 8)
-            .alignment([.top, .left])
-            .backgroundColor(UIColor.secondarySystemGroupedBackground)
         }
         .padding(py_safeArea().map { v in
             UIEdgeInsets(top: v.top + 8, left: v.left + 8, bottom: v.bottom + 8, right: v.right + 8)

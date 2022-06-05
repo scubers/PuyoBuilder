@@ -10,6 +10,8 @@ import Foundation
 import Puyopuyo
 
 class BuilderStore {
+    private let bag = Disposers.createBag()
+
     private let history = BuilderHistory<String?>(count: 100, first: nil)
 
     let root = State<BuilderPuzzleItem?>(nil)
@@ -17,6 +19,8 @@ class BuilderStore {
     let selected = State<BuilderPuzzleItem?>(nil)
 
     let canvasSize = State(CGSize(width: 200, height: 200))
+    
+    let colorizeSetting = State(value: true)
 
     func toggleSelect(_ item: BuilderPuzzleItem) {
         if item === selected.value {
@@ -57,6 +61,12 @@ extension BuilderStore {
         defer { record() }
         parent.append(child: item)
         root.resend()
+    }
+
+    func setCanvasSize(width: CGFloat? = nil, height: CGFloat? = nil) {
+        let size = CGSize(width: width ?? canvasSize.value.width, height: height ?? canvasSize.value.height)
+        canvasSize.value = size
+        record()
     }
 }
 
@@ -121,7 +131,7 @@ extension BuilderStore {
             }
         }
 
-        if let view = puzzle.layoutNodeView {
+        if let view = puzzle.layoutNodeView, colorizeSetting.value {
             view.backgroundColor = Helper.randomColor()
         }
 

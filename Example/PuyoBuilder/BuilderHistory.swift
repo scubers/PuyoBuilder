@@ -13,31 +13,39 @@ class BuilderHistory<T>: ChangeNotifier {
     let maxCount: Int
 
     init(count: Int, first: T) {
-        self.maxCount = count
-        history = [first]
-        history.reserveCapacity(maxCount)
+        maxCount = count
+        root = Node(value: first)
+        current = root
+        self.count = 1
     }
 
     var changeNotifier: Outputs<Void> { notifier.asOutput() }
 
     private let notifier = SimpleIO<Void>()
 
-    private(set) var history: [T]
+    private var root: Node<T>
 
-    private(set) var currentIndex = 0
+    private(set) var current: Node<T>
 
-    var canUndo: Bool { currentIndex > 0 }
-    var canRedo: Bool { currentIndex < history.count - 1 }
+    private var count: Int
 
-    var currentState: T { history[currentIndex] }
+    var canUndo: Bool { current.previous != nil }
+    var canRedo: Bool { current.next != nil }
+
+    var currentState: T { current.value }
 
     func push(_ next: T) {
-        if history.count == maxCount {
-            history.removeFirst()
+        let node = Node(value: next)
+        node.previous = current
+        current.next = node
+        current = node
+        count += 1
+
+        if count > maxCount {
+            count -= 1
+            root = root.next!
         }
-        history.append(next)
-        currentIndex += 1
-        history.removeLast(max(0, history.count - currentIndex - 1))
+
         notifier.input(value: ())
     }
 
@@ -45,7 +53,7 @@ class BuilderHistory<T>: ChangeNotifier {
         guard canUndo else {
             return
         }
-        currentIndex -= 1
+        current = current.previous!
         notifier.input(value: ())
     }
 
@@ -53,7 +61,17 @@ class BuilderHistory<T>: ChangeNotifier {
         guard canRedo else {
             return
         }
-        currentIndex += 1
+        current = current.next!
         notifier.input(value: ())
+    }
+
+    class Node<T> {
+        init(value: T) {
+            self.value = value
+        }
+
+        var value: T
+        weak var previous: Node<T>?
+        var next: Node<T>?
     }
 }

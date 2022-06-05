@@ -29,6 +29,10 @@ class LayerPanel: ZBox {
         let selected = store.selected
         attach {
             VBox().attach($0) {
+                SettingPanel(store: store).attach($0)
+                    .width(.fill)
+                    .margin(top: $0.py_safeArea().binder.top)
+                
                 RecycleBox(
                     sections: [
                         ListRecycleSection(items: items.asOutput(), cell: { o, i in
@@ -94,8 +98,10 @@ class LayerPanel: ZBox {
                 .width(.fill)
             }
             .size(.fill, .fill)
+            .space(1)
 
-            UIButton(type: .contactAdd).attach($0)
+            SelectorButton().attach($0)
+                .state(.init(selected: false, title: "Click to add"))
                 .alignment(.center)
                 .visibility(empty.map { $0.py_visibleOrGone() })
                 .onTap(to: self) { this, _ in
@@ -137,7 +143,12 @@ class LayerPanel: ZBox {
     }
 
     func removeItem(_ item: BuilderPuzzleItem) {
-        store.removeItem(item)
+        let controller = UIAlertController(title: "Remove?", message: nil, preferredStyle: .alert)
+        controller.addAction(.init(title: "No", style: .default))
+        controller.addAction(.init(title: "Yes", style: .destructive, handler: { _ in
+            self.store.removeItem(item)
+        }))
+        findTopViewController(for: self)?.present(controller, animated: true)
     }
 }
 
