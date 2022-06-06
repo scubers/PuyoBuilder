@@ -125,7 +125,9 @@ extension BuilderStore {
                     let longPress = UILongPressGestureRecognizer()
 
                     longPress.py_addAction { [weak self] g in
-                        self?.analyze(puzzle: g.view!)
+                        if g.state == .began {
+                            self?.analyze(puzzle: g.view!)                            
+                        }
                     }
 
                     $0.view.addGestureRecognizer(longPress)
