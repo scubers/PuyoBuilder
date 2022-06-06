@@ -28,4 +28,22 @@ class PuzzleManager {
     func addTemplate(_ template: PuzzleTemplate) {
         templates.append(template)
     }
+
+    func template(for piece: PuzzlePiece) -> PuzzleTemplate {
+        switch piece {
+        case is ZGroup: return ZGroupPuzzleTemplate()
+        case is FlowGroup: return FlowGroupPuzzleTemplate()
+        case is LinearGroup: return LinearGroupPuzzleTemplate()
+
+        case is ZBox: return ZBoxPuzzleTemplate()
+        case is FlowBox: return FlowBoxPuzzleTemplate()
+        case is LinearBox: return LinearBoxPuzzleTemplate()
+
+        case is UILabel: return UILabelPuzzleTemplate()
+        case is UIImageView: return UIImagePuzzleTemplate()
+        case is UIView: return UIViewPuzzleTemplate()
+
+        default: fatalError()
+        }
+    }
 }

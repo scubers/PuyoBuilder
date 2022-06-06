@@ -20,7 +20,7 @@ class ViewController: UIViewController {
         PadPuzzleView(store: store).attach(view)
             .size(.fill, .fill)
 
-        store.repaceRoot(store.buildWithJson(Helper.defaultViewJson))
+        store.replaceRoot(store.buildWithJson(Helper.defaultViewJson))
     }
 
     override func viewWillLayoutSubviews() {

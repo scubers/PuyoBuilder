@@ -45,7 +45,7 @@ class JsonViewVC: UIViewController {
                         let json = this.text.value
 
                         this.dismiss(animated: true) {
-                            store.repaceRoot(store.buildWithJson(json))
+                            store.replaceRoot(store.buildWithJson(json))
                         }
                     }
             }

@@ -36,10 +36,12 @@ protocol PuzzleStateProvider {
 
     func bindState(to puzzle: PuzzlePiece)
 
+    func stateFromPuzzle(_ puzzle: PuzzlePiece)
+
     func resume(_ param: [String: Any]?)
 
     func serialize() -> [String: Any]?
-    
+
     func generateCode() -> [String]
 }
 

@@ -101,7 +101,9 @@ struct InspectorViewFactory {
                 .setState(\.value, state.state)
                 .onEvent(MultiInputs([state.state.asInput(), onChanged.asInput { _ in }]))
         } else {
-            fatalError()
+//            fatalError()
+            print("Unsupported inspect type: \(type(of: state))")
+            return nil
         }
     }
 }

@@ -26,7 +26,7 @@ struct UIImageBuildPuzzleHandler: BuildPuzzleHandler {
     func createState() -> PuzzleStateProvider {
         UIImagePuzzleStateProvider()
     }
-    
+
     func initializeCode() -> String {
         "UIImageView()"
     }
@@ -34,10 +34,12 @@ struct UIImageBuildPuzzleHandler: BuildPuzzleHandler {
 
 class UIImagePuzzleStateModel: BasePuzzleStateModel {
     var url: String?
+    var image: UIImage?
 }
 
 class UIImagePuzzleStateProvider: BasePuzzleStateProvider {
     let url = PuzzleState(title: "ImageUrl", value: "")
+    let image = PuzzleState<UIImage?>(title: "Image", value: nil)
 
     override var states: [IPuzzleState] {
         [url] + super.states
@@ -47,7 +49,15 @@ class UIImagePuzzleStateProvider: BasePuzzleStateProvider {
         super.bindState(to: puzzle)
         if let puzzle = puzzle as? UIImageView {
             puzzle.attach()
-                .viewUpdate(on: url.distinct().then(downloadImage(url:))) { $0.image = $1 }
+                .viewUpdate(on: url.distinct().then(downloadImage(url:)).filter { $0 != nil }) { $0.image = $1 }
+                .viewUpdate(on: image) { $0.image = $1 }
+        }
+    }
+
+    override func stateFromPuzzle(_ puzzle: PuzzlePiece) {
+        super.stateFromPuzzle(puzzle)
+        if let puzzle = puzzle as? UIImageView {
+            image.input(value: puzzle.image)
         }
     }
 

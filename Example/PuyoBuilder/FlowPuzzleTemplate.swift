@@ -38,7 +38,7 @@ struct FlowBuildPuzzleHandler: BuildPuzzleHandler {
         provider.padding.specificValue = .init(top: 8, left: 8, bottom: 8, right: 8)
         return provider
     }
-    
+
     func initializeCode() -> String {
         isGroup ? "FlowGroup()" : "FlowBox()"
     }
@@ -78,6 +78,16 @@ class FlowPuzzleStateProvider: LinearPuzzleStateProvider {
         puzzle._bind(arrange, action: { $0.getFlowReg()?.arrange = $1 })
         puzzle._bind(itemSpace, action: { $0.getFlowReg()?.itemSpace = $1 })
         puzzle._bind(runSpace, action: { $0.getFlowReg()?.runSpace = $1 })
+    }
+
+    override func stateFromPuzzle(_ puzzle: PuzzlePiece) {
+        super.stateFromPuzzle(puzzle)
+        if let reg = puzzle.getFlowReg() {
+            runFormat.input(value: reg.runFormat)
+            arrange.input(value: reg.arrange)
+            itemSpace.input(value: reg.itemSpace)
+            runSpace.input(value: reg.runSpace)
+        }
     }
 
     override func resume(_ param: [String: Any]?) {

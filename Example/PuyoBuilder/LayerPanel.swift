@@ -130,7 +130,7 @@ class LayerPanel: ZBox {
 
     func chooseRootBox() {
         let vc = NodeSelectVC(isRoot: true) {
-            self.store.repaceRoot(BuilderPuzzleItem(template: $0))
+            self.store.replaceRoot(BuilderPuzzleItem(template: $0))
         }
         findTopViewController(for: self)?.present(vc, animated: true)
     }

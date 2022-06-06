@@ -54,7 +54,6 @@ class BasePuzzleStateProvider: PuzzleStateProvider {
 
     var states: [IPuzzleState] {
         [
-//            activated,
             width,
             height,
             visibility,
@@ -76,6 +75,16 @@ class BasePuzzleStateProvider: PuzzleStateProvider {
             if let v = model.height?.getSizeDescription() { codes.append(".height(\(v.genCode()))") }
         }
         return codes
+    }
+
+    func stateFromPuzzle(_ puzzle: PuzzlePiece) {
+        let m = puzzle.layoutMeasure
+        width.input(value: m.size.width)
+        height.input(value: m.size.height)
+        visibility.input(value: puzzle.layoutVisibility)
+        margin.input(value: m.margin)
+        alignment.input(value: m.alignment)
+        flowEnding.input(value: m.flowEnding)
     }
 
     func bindState(to puzzle: PuzzlePiece) {
@@ -159,6 +168,14 @@ class BoxPuzzleStateProvider: BasePuzzleStateProvider {
         super.bindState(to: puzzle)
         puzzle._bind(padding, action: { $0.getReg()?.padding = $1 })
         puzzle._bind(justifyContent, action: { $0.getReg()?.justifyContent = $1 })
+    }
+    
+    override func stateFromPuzzle(_ puzzle: PuzzlePiece) {
+        super.stateFromPuzzle(puzzle)
+        if let reg = puzzle.getReg() {
+            padding.input(value: reg.padding)
+            justifyContent.input(value: reg.justifyContent)
+        }
     }
 
     override func resume(_ param: [String: Any]?) {

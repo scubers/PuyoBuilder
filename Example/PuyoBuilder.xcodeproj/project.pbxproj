@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0956C5B72843837A001A7F8F /* BuildPuzzleHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0956C5B62843837A001A7F8F /* BuildPuzzleHandler.swift */; };
+		0956C5B72843837A001A7F8F /* PuzzleTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0956C5B62843837A001A7F8F /* PuzzleTemplate.swift */; };
 		0956C5BB28438459001A7F8F /* UIViewPuzzleTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0956C5BA28438459001A7F8F /* UIViewPuzzleTemplate.swift */; };
 		0956C5BD2843856C001A7F8F /* LinearPuzzleTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0956C5BC2843856C001A7F8F /* LinearPuzzleTemplate.swift */; };
 		0956C5BF28438632001A7F8F /* FlowPuzzleTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0956C5BE28438632001A7F8F /* FlowPuzzleTemplate.swift */; };
@@ -68,7 +68,7 @@
 /* Begin PBXFileReference section */
 		04A1C3D714D6E8756DD08471 /* Pods_PuyoBuilder_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PuyoBuilder_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		08E58E9657B839C372F573FF /* Pods-PuyoBuilder_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PuyoBuilder_Example.release.xcconfig"; path = "Target Support Files/Pods-PuyoBuilder_Example/Pods-PuyoBuilder_Example.release.xcconfig"; sourceTree = "<group>"; };
-		0956C5B62843837A001A7F8F /* BuildPuzzleHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuildPuzzleHandler.swift; sourceTree = "<group>"; };
+		0956C5B62843837A001A7F8F /* PuzzleTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PuzzleTemplate.swift; sourceTree = "<group>"; };
 		0956C5BA28438459001A7F8F /* UIViewPuzzleTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewPuzzleTemplate.swift; sourceTree = "<group>"; };
 		0956C5BC2843856C001A7F8F /* LinearPuzzleTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinearPuzzleTemplate.swift; sourceTree = "<group>"; };
 		0956C5BE28438632001A7F8F /* FlowPuzzleTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowPuzzleTemplate.swift; sourceTree = "<group>"; };
@@ -224,7 +224,7 @@
 				0956C5B928438445001A7F8F /* Template */,
 				096A9FA8283953A000C6283E /* Model.swift */,
 				09795639284382ED00E4BB56 /* PuzzleManager.swift */,
-				0956C5B62843837A001A7F8F /* BuildPuzzleHandler.swift */,
+				0956C5B62843837A001A7F8F /* PuzzleTemplate.swift */,
 				096A9FB3283A01FF00C6283E /* PuzzleState.swift */,
 			);
 			name = Puzzle;
@@ -596,7 +596,7 @@
 				096A9FB22839F8CA00C6283E /* BuilderStore.swift in Sources */,
 				096A9FCD283AAB4500C6283E /* AlignmentInspector.swift in Sources */,
 				09954F70284A7328005B402A /* BuilderPuzzleItem.swift in Sources */,
-				0956C5B72843837A001A7F8F /* BuildPuzzleHandler.swift in Sources */,
+				0956C5B72843837A001A7F8F /* PuzzleTemplate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

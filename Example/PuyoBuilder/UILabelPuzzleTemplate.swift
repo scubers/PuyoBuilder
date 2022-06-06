@@ -26,7 +26,7 @@ struct UILabelBuildPuzzleHandler: BuildPuzzleHandler {
     func createState() -> PuzzleStateProvider {
         UILabelPuzzleStateProvider()
     }
-    
+
     func initializeCode() -> String {
         "UILabel()"
     }

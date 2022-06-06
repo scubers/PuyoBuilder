@@ -19,7 +19,7 @@ class BuilderStore {
     let selected = State<BuilderPuzzleItem?>(nil)
 
     let canvasSize = State(CGSize(width: 200, height: 200))
-    
+
     let colorizeSetting = State(value: true)
 
     func toggleSelect(_ item: BuilderPuzzleItem) {
@@ -39,7 +39,7 @@ extension BuilderStore {
         selected.value = nil
     }
 
-    func repaceRoot(_ node: BuilderPuzzleItem?) {
+    func replaceRoot(_ node: BuilderPuzzleItem?) {
         defer { record() }
         resetRoot(node)
     }
@@ -78,6 +78,7 @@ extension BuilderStore {
     }
 
     var canUndo: Bool { history.canUndo }
+
     var canRedo: Bool { history.canRedo }
 
     func undo() {
@@ -119,6 +120,15 @@ extension BuilderStore {
                     if let node = node {
                         this.toggleSelect(node)
                     }
+                }
+                .attach {
+                    let longPress = UILongPressGestureRecognizer()
+
+                    longPress.py_addAction { [weak self] g in
+                        self?.analyze(puzzle: g.view!)
+                    }
+
+                    $0.view.addGestureRecognizer(longPress)
                 }
         }
 
@@ -172,5 +182,29 @@ extension BuilderStore {
             return codes.map { "\($0)\n" }.joined(separator: "")
         }
         return ""
+    }
+}
+
+// MARK: - Analyzer
+
+extension BuilderStore {
+    private func scan(_ puzzle: PuzzlePiece) -> BuilderPuzzleItem {
+        let template = PuzzleManager.shared.template(for: puzzle)
+        let item = BuilderPuzzleItem(template: template)
+        item.provider.stateFromPuzzle(puzzle)
+
+        if let piece = puzzle as? BoxLayoutContainer {
+            piece.layoutChildren.forEach { node in
+                if let node = node as? PuzzlePiece {
+                    item.append(child: scan(node))
+                }
+            }
+        }
+        return item
+    }
+
+    func analyze(puzzle: PuzzlePiece) {
+        let item = scan(puzzle)
+        replaceRoot(item)
     }
 }

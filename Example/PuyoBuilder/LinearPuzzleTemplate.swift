@@ -84,6 +84,16 @@ class LinearPuzzleStateProvider: BoxPuzzleStateProvider {
         puzzle._bind(space, action: { $0.getLinearReg()?.space = $1 })
     }
 
+    override func stateFromPuzzle(_ puzzle: PuzzlePiece) {
+        super.stateFromPuzzle(puzzle)
+        if let reg = puzzle.getLinearReg() {
+            direction.input(value: reg.direction)
+            format.input(value: reg.format)
+            reverse.input(value: reg.reverse)
+            space.input(value: reg.space)
+        }
+    }
+    
     override func resume(_ param: [String: Any]?) {
         super.resume(param)
         if let node = LinearPuzzleStateModel.deserialize(from: param) {
